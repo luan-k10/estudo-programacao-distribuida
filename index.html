@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estudo – Programação Distribuída e Paralela</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">⚡ PDP <span>Programação Distribuída & Paralela</span></div>
+  <nav id="nav">
+    <button data-view="inicio" class="active">🏠 Início</button>
+    <button data-view="resumos">📚 Resumos</button>
+    <button data-view="quiz">❓ Quiz</button>
+    <button data-view="simulado">📝 Simulado</button>
+    <button data-view="flash">🃏 Flashcards</button>
+    <button data-view="discursivas">✍️ Discursivas</button>
+    <button data-view="lab">🧪 Laboratório</button>
+  </nav>
+</header>
+
+<main>
+<!-- ============================ INÍCIO ============================ -->
+<section id="view-inicio" class="view active">
+  <div class="hero">
+    <h1>Guia de estudo para a prova</h1>
+    <p>Baseado nos slides do Prof. Jacques Oliveira (Multivix) e na <b>Lista 1 de exercícios</b>. Tudo resumido, com questões comentadas, simulações interativas e respostas-modelo das discursivas.</p>
+  </div>
+
+  <div class="grid3">
+    <div class="card stat"><div class="big" id="st-total">0</div><div>questões respondidas</div></div>
+    <div class="card stat"><div class="big" id="st-acerto">0%</div><div>taxa de acerto</div></div>
+    <div class="card stat"><div class="big" id="st-erradas">0</div><div>para revisar</div></div>
+  </div>
+
+  <div class="card">
+    <h2>🗺️ Roteiro sugerido (≈ 3 horas)</h2>
+    <ol class="roteiro">
+      <li><b>Leia os resumos</b> na ordem (40 min). Foque nas caixas <span class="tag warn">⚠️ Pegadinha</span>.</li>
+      <li><b>Faça o Quiz da Lista 1</b> — são as questões oficiais do professor (30 min). Leia todas as explicações.</li>
+      <li><b>Laboratório</b>: brinque com as simulações de race condition, semáforo e eventos (20 min). Ver funcionando fixa muito mais.</li>
+      <li><b>Flashcards</b> para memorizar definições (20 min).</li>
+      <li><b>Discursivas</b>: tente responder em voz alta/no papel antes de revelar a resposta-modelo (30 min).</li>
+      <li><b>Simulado</b> de 20 questões aleatórias. Repita até passar de 80% (30 min).</li>
+      <li>Use <b>“Revisar erradas”</b> no Quiz para atacar seus pontos fracos.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>📊 Seu desempenho por tema</h2>
+    <div id="progresso-temas"></div>
+    <button class="btn ghost small" id="btn-reset">Zerar progresso</button>
+  </div>
+
+  <div class="card">
+    <h2>🧠 Os 10 conceitos que mais caem</h2>
+    <div class="grid2 mini">
+      <div><b>Concorrência</b> = intercalada · <b>Paralelismo</b> = simultâneo em vários núcleos</div>
+      <div><b>Thread</b> compartilha memória · <b>Processo</b> tem memória isolada (mais pesado)</div>
+      <div><b>async/await</b> não bloqueia a thread enquanto espera I/O</div>
+      <div><code>public async Task X()</code> + <code>await Task.Delay()</code> (nunca Thread.Sleep)</div>
+      <div><b>Task.WhenAll</b> = várias tarefas juntas, aguarda todas</div>
+      <div><b>Mutex/lock</b> = 1 por vez · <b>Semáforo</b> = até N</div>
+      <div><b>Monitor</b>: Enter / Exit (finally) / TryEnter(obj, ms) → bool</div>
+      <div><b>ManualResetEvent</b> libera todas · <b>AutoResetEvent</b> libera uma</div>
+      <div><b>Deadlock</b> = espera circular · <b>Race condition</b> = resultado depende da ordem</div>
+      <div><b>RabbitMQ</b> = filas ordenadas · <b>MQTT</b> = pub/sub IoT · <b>WebSocket</b> = bidirecional</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ RESUMOS ============================ -->
+<section id="view-resumos" class="view">
+  <div class="resumo-layout">
+    <aside class="toc" id="toc">
+      <a href="#r-principios">1. Princípios de SD</a>
+      <a href="#r-threads">2. Threads e Async/Await</a>
+      <a href="#r-comunicacao">3. Comunicação</a>
+      <a href="#r-arquiteturas">4. Arquiteturas e Memória</a>
+      <a href="#r-sincronizacao">5. Semáforos e Mutex</a>
+      <a href="#r-monitor">6. Monitor</a>
+      <a href="#r-eventos">7. Manual/AutoResetEvent</a>
+      <a href="#r-comparativo">⭐ Quadro geral</a>
+    </aside>
+
+    <div class="resumo-content">
+
+    <!-- 1 -->
+    <article id="r-principios" class="card resumo">
+      <h2>1. Princípios de Implementação de Sistemas Distribuídos</h2>
+      <p><b>Ideia central:</b> dividir tarefas entre <b>várias máquinas</b> que se comunicam pela rede para resolver problemas maiores de forma <b>eficiente, escalável e tolerante a falhas</b> (bancos, redes sociais, jogos online, nuvem, e-commerce).</p>
+      <div class="compare">
+        <div><h4>Programação Paralela</h4>Divide tarefas <b>dentro do mesmo computador</b>: multithreading, GPU, multicore.</div>
+        <div><h4>Programação Distribuída</h4>Amplia para <b>múltiplos computadores</b> conectados em rede.</div>
+      </div>
+
+      <h3>Objetivos de um Sistema Distribuído</h3>
+      <table>
+        <tr><th>Objetivo</th><th>O que significa</th></tr>
+        <tr><td><b>Transparência</b></td><td><b>Localização</b> (não preciso saber onde está o recurso) · <b>Replicação</b> (não preciso saber que há cópias) · <b>Acesso</b> (forma uniforme de acessar) · <b>Concorrência</b> (vários usuários sem conflito)</td></tr>
+        <tr><td><b>Escalabilidade</b></td><td>Suportar crescimento de usuários/dados, evitar gargalos centralizados, facilitar manutenção (serviços separados)</td></tr>
+        <tr><td><b>Tolerância a falhas</b></td><td>Se uma máquina cai, o sistema continua. Redundância e recuperação</td></tr>
+        <tr><td><b>Desempenho</b></td><td><b>Baixa latência</b> (resposta rápida) e <b>alto throughput</b> (muitas requisições/segundo)</td></tr>
+      </table>
+
+      <h3>Princípios fundamentais de implementação</h3>
+      <ul>
+        <li><b>Comunicação entre processos:</b> <i>Sockets</i> (baixo nível, mensagens binárias) · <i>RPC</i> (função remota como se fosse local) · <i>Mensageria</i> (Kafka, RabbitMQ – assíncrona).</li>
+        <li><b>Sincronização:</b> relógios lógicos (<b>Lamport</b>) e controle de concorrência (exclusão mútua distribuída, locks distribuídos – <b>ZooKeeper</b>).</li>
+        <li><b>Consistência e replicação:</b> <b>forte</b> (sempre iguais) × <b>eventual</b> (ficam iguais com o tempo). <b>Teorema CAP</b>: Consistência × Disponibilidade × Tolerância a Partições → <b>escolhe 2</b>.</li>
+        <li><b>Gerenciamento de falhas:</b> detecção (<b>heartbeats, timeouts</b>) e recuperação (<b>checkpoint, rollback, replicação</b>).</li>
+        <li><b>Escalabilidade:</b> balanceamento de carga · <b>sharding</b> (dividir dados entre servidores) · <b>elasticidade</b> (adicionar/remover máquinas sob demanda).</li>
+      </ul>
+
+      <h3>Exemplos práticos e tecnologias</h3>
+      <table>
+        <tr><th>Categoria</th><th>Exemplos</th></tr>
+        <tr><td>Big data</td><td>MapReduce / Hadoop, Spark</td></tr>
+        <tr><td>Arquivos distribuídos</td><td>Google File System, HDFS</td></tr>
+        <tr><td>Bancos distribuídos</td><td>Cassandra, MongoDB, CockroachDB</td></tr>
+        <tr><td>Comunicação</td><td>gRPC, RabbitMQ, Kafka, REST APIs</td></tr>
+        <tr><td>Frameworks</td><td>Hadoop, Spark, Akka, MPI</td></tr>
+        <tr><td>Orquestração</td><td>Kubernetes, Docker Swarm</td></tr>
+        <tr><td>Tolerância a falhas / coordenação</td><td>ZooKeeper, Consul, etcd</td></tr>
+      </table>
+
+      <h3>Do monólito aos microsserviços</h3>
+      <div class="compare">
+        <div><h4>Monólito em camadas</h4>
+          <ul>
+            <li><b>Domínio/Modelo:</b> entidades (Cliente, Pedido, Produto) e suas validações</li>
+            <li><b>Negócio/Serviço:</b> regras (calcular desconto, verificar crédito)</li>
+            <li><b>Dados/Repository:</b> acesso ao banco (salvar Pedido no PostgreSQL)</li>
+            <li><b>Apresentação/API:</b> contato com usuário/sistema (API REST, tela)</li>
+          </ul>
+        </div>
+        <div><h4>Microsserviços (e-commerce)</h4>
+          <ul>
+            <li><b>Catálogo:</b> produtos, banco próprio (MongoDB)</li>
+            <li><b>Pedidos:</b> regras de compra, consulta o Catálogo (PostgreSQL)</li>
+            <li><b>Pagamentos:</b> transações, gateways (PayPal, Stripe)</li>
+            <li><b>Usuários:</b> cadastro, login, preferências</li>
+          </ul>
+        </div>
+      </div>
+      <p><b>Comunicação:</b> síncrona via REST/gRPC; assíncrona via fila (Pedidos publica evento → Pagamentos consome).<br>
+      <b>Benefícios:</b> escalabilidade (só mais instâncias de Pedidos), independência tecnológica, <b>resiliência</b> (Pagamentos cai, o resto funciona), evolução mais rápida.</p>
+      <div class="pegadinha">⚠️ <b>Pegadinha:</b> “serviços separados que se comunicam pela rede” = <b>distribuída</b>, não “paralela”.</div>
+      <button class="btn practice" data-tema="principios">Praticar este tema →</button>
+    </article>
+
+    <!-- 2 -->
+    <article id="r-threads" class="card resumo">
+      <h2>2. Threads na prática: Concorrência, Paralelismo e Async/Await</h2>
+      <div class="compare">
+        <div><h4>Concorrência</h4>Lidar com várias tarefas <b>“ao mesmo tempo”, mas não necessariamente no mesmo instante</b>. As tarefas são <b>intercaladas</b> (o processador alterna). Ideal quando há <b>esperas</b>: disco, rede, usuário.</div>
+        <div><h4>Paralelismo</h4>Execução de várias tarefas <b>no mesmo instante</b> em <b>núcleos/processadores diferentes</b>. Requer multicore. Ideal para tarefas <b>pesadas de CPU</b>: cálculos, renderização.</div>
+      </div>
+      <div class="pegadinha">⚠️ “Execução simultânea em múltiplos núcleos” = <b>paralelismo</b>. “Execução intercalada em uma ou mais threads” = <b>concorrência</b>.</div>
+
+      <h3>Thread × Processo</h3>
+      <p><b>Thread:</b> menor unidade de execução dentro de um processo; <b>compartilha memória e recursos</b> com as outras threads.<br>
+      <b>Processo:</b> tem <b>espaço de memória próprio e isolado</b> → criar, gerenciar e comunicar processos custa mais ao SO → <b>mais pesado</b>.</p>
+
+      <h3>Thread bloqueada</h3>
+      <p>Thread <b>ociosa esperando</b> uma operação terminar. Não pode fazer mais nada, mesmo com a CPU livre.</p>
+<pre><code>Thread.Sleep(1000);                        // para literalmente 1s
+File.ReadAllText(path);                    // espera o disco
+httpClient.GetStringAsync(url).Result;     // espera a rede de forma BLOQUEANTE</code></pre>
+      <p><b>Problemas:</b> baixo aproveitamento de recursos · menor escalabilidade (cada requisição prende uma thread) · UI congelada · servidor esgota o <b>pool de threads</b>.</p>
+
+      <h3>Abordagem do C#: TPL (System.Threading.Tasks)</h3>
+      <ul>
+        <li><code>Task</code> = operação que pode rodar de forma assíncrona; <code>Task&lt;T&gt;</code> = retorna um resultado.</li>
+        <li><code>async</code> marca o método; <code>await</code> pausa <b>o método</b> até a tarefa terminar, <b>sem bloquear a thread</b>.</li>
+        <li>O runtime usa um <b>thread pool</b> eficiente (evita criar threads demais).</li>
+      </ul>
+
+      <h3>Como funciona por baixo dos panos</h3>
+      <ol>
+        <li>O compilador transforma o método async em uma <b>máquina de estado</b>; cada <code>await</code> é um <b>ponto de suspensão</b>.</li>
+        <li>O <code>await</code> <b>registra uma continuação</b> e <b>devolve o controle imediatamente</b> → a thread fica livre.</li>
+        <li>Quando a tarefa termina, a continuação roda — geralmente no mesmo contexto, a menos que se use <code>ConfigureAwait(false)</code>.</li>
+        <li><code>try/catch</code> funciona normalmente; métodos async devem retornar <code>Task</code>/<code>Task&lt;T&gt;</code>.</li>
+      </ol>
+<pre><code>public async Task&lt;string&gt; BuscarAsync()   // ✅ assinatura correta
+{
+    await Task.Delay(2000);                // ✅ não bloqueia (≠ Thread.Sleep)
+    return "ok";
+}
+
+// Disparar várias e aguardar TODAS:
+var t1 = EnviarPixAsync(a); var t2 = EnviarPixAsync(b); var t3 = EnviarPixAsync(c);
+await Task.WhenAll(t1, t2, t3);   // tempo ≈ a mais lenta
+// Task.WhenAny(...) → retorna quando a PRIMEIRA terminar</code></pre>
+
+      <h3>Motivações para usar async/await</h3>
+      <ol>
+        <li><b>Evitar bloqueio</b> – <code>await Task.Delay</code> libera a thread (concorrência cooperativa).</li>
+        <li><b>Melhor uso de recursos</b> – milhares de tarefas sem milhares de threads.</li>
+        <li><b>Código simples</b> – parece sequencial, mas é assíncrono.</li>
+        <li><b>Composição</b> – <code>Task.WhenAll</code>, <code>Task.WhenAny</code>.</li>
+        <li><b>Escalabilidade</b> – APIs e microsserviços atendem mais usuários com menos recursos.</li>
+        <li><b>Banco de dados</b> – EF / Dapper com await: app não trava esperando o banco.</li>
+        <li><b>PIX</b> – várias transações simultâneas; o sistema continua operando enquanto aguarda as APIs externas.</li>
+      </ol>
+      <div class="pegadinha">⚠️ Async <b>não</b> torna a operação mais rápida e <b>não</b> elimina threads. A vantagem é <b>não bloquear a thread durante a espera</b>.<br>⚠️ <code>async void</code> só para event handlers. <code>Task.Sleep</code> não existe. <code>await Thread.Sleep</code> não compila.</div>
+      <button class="btn practice" data-tema="threads">Praticar este tema →</button>
+    </article>
+
+    <!-- 3 -->
+    <article id="r-comunicacao" class="card resumo">
+      <h2>3. Comunicação entre Sistemas Distribuídos</h2>
+      <h3>Modelos de comunicação</h3>
+      <table>
+        <tr><th>Modelo</th><th>Como funciona</th><th>Exemplos</th></tr>
+        <tr><td><b>Troca de mensagens</b></td><td>send/receive explícito; síncrona (bloqueia) ou assíncrona. Base de quase tudo</td><td>MPI, RabbitMQ</td></tr>
+        <tr><td><b>RPC</b></td><td>Chama função em outro nó <b>como se fosse local</b>. Abstrai a rede, mas esconde latência e falhas</td><td>Java RMI, gRPC, WCF</td></tr>
+        <tr><td><b>Objetos remotos</b></td><td>RPC orientado a objetos: chama métodos de objetos remotos</td><td>RMI, CORBA</td></tr>
+        <tr><td><b>Pub/Sub</b></td><td>Produtor publica em <b>tópico</b>; assinantes recebem. Baseado em eventos, <b>desacoplado</b>, escalável</td><td>Kafka, MQTT, Redis Pub/Sub</td></tr>
+      </table>
+
+      <h3>MQTT (Message Queuing Telemetry Transport)</h3>
+      <p>Protocolo <b>leve</b>, pub/sub, sobre TCP/IP, para dispositivos limitados e redes instáveis (IoT).
+      Papéis: <b>Broker</b> (gerencia tópicos e encaminha) · <b>Publisher</b> (publica) · <b>Subscriber</b> (recebe).<br>
+      Ex.: sensor → publica em <code>casa/sala/temperatura</code> → app inscrito recebe.</p>
+
+      <h3>Protocolos</h3>
+      <div class="compare">
+        <div><h4>TCP</h4>Confiável, orientado a conexão, <b>garante ordem e entrega</b>. Base de HTTP e RPC.</div>
+        <div><h4>UDP</h4>Mais rápido, <b>não garante</b> entrega/ordem. Jogos online, streaming (baixa latência).</div>
+      </div>
+      <ul>
+        <li><b>HTTP/HTTPS:</b> base dos serviços web e REST. Simples e interoperável.</li>
+        <li><b>gRPC:</b> RPC moderno sobre <b>HTTP/2 + Protobuf</b>. Rápido e multiplataforma.</li>
+        <li><b>Problemas clássicos:</b> latência · falhas (perda, atraso, duplicação) · ordenação · confiabilidade.</li>
+      </ul>
+
+      <h3>Ferramentas</h3>
+      <ul>
+        <li><b>Sockets</b> TCP/UDP – ponto a ponto, baixo nível.</li>
+        <li><b>RPC/RMI</b> – Java RMI (ensino), gRPC (mercado), WCF (.NET corporativo).</li>
+        <li><b>APIs REST</b> – sobre HTTP; Postman, Swagger/OpenAPI.</li>
+        <li><b>Message brokers</b> – <b>RabbitMQ</b> (filas, ordem e entrega garantida) · <b>Kafka</b> (eventos em larga escala) · <b>MQTT</b> (IoT).</li>
+        <li><b>Coordenação</b> – ZooKeeper (clusters), etcd (configuração no Kubernetes).</li>
+        <li><b>Alto nível</b> – Hadoop/Spark, Akka (atores), Kubernetes, AWS SQS, Azure Service Bus, Google Pub/Sub.</li>
+      </ul>
+
+      <h3>Comunicação em sistemas embarcados</h3>
+      <p>Recursos limitados → comunicação deve ser <b>eficiente</b> (baixo overhead), <b>confiável</b> e <b>determinística</b> (tempo real).</p>
+      <table>
+        <tr><th>Tipo</th><th>Características</th></tr>
+        <tr><td><b>UART</b> (RS-232/RS-485)</td><td>Serial ponto a ponto, simples; RS-485 multiponto; até alguns Mbps</td></tr>
+        <tr><td><b>SPI</b></td><td>Mestre–escravo, <b>muito rápida</b>, curto alcance (mesma placa)</td></tr>
+        <tr><td><b>I²C</b></td><td>Mestre–escravo, mais lenta que SPI, vários dispositivos em <b>2 fios (SDA, SCL)</b></td></tr>
+        <tr><td><b>CAN</b></td><td>Automotivo/industrial, <b>multi-master</b>, robusto a ruído, prioriza mensagens</td></tr>
+        <tr><td><b>Ethernet</b></td><td>Embarcados avançados, EtherCAT, Profinet, integra com IP</td></tr>
+        <tr><td><b>Modbus</b></td><td>Industrial clássico, RS-485 ou TCP/IP, CLPs e automação predial</td></tr>
+        <tr><td><b>Bluetooth/BLE</b></td><td>Curto alcance; BLE = baixo consumo</td></tr>
+        <tr><td><b>Wi-Fi</b></td><td>Integra direto com IP, consumo maior</td></tr>
+        <tr><td><b>LoRa/ZigBee/Z-Wave</b></td><td>Baixa potência e <b>longo alcance</b>, sensores remotos</td></tr>
+        <tr><td><b>Celular/NB-IoT</b></td><td>Cobertura ampla, mais caro e maior consumo</td></tr>
+        <tr><td><b>MQTT</b></td><td>Leve, TCP/IP, pub/sub</td></tr>
+        <tr><td><b>CoAP</b></td><td>Tipo HTTP para dispositivos limitados, sobre <b>UDP</b></td></tr>
+        <tr><td><b>OPC-UA</b></td><td>Automação industrial: interoperabilidade e padronização</td></tr>
+      </table>
+      <p><b>Desafios:</b> baixo consumo de energia · ruído · pouca CPU · tempo real (entregar no prazo).<br>
+      <b>Raspberry Pi</b> = ponte: roda Linux, tem rede e GPIO (I²C, SPI, UART). Papéis: <b>mestre I²C</b>, <b>servidor</b> (Flask/MQTT broker), <b>gateway IoT</b> (Arduinos → RPi → nuvem).</p>
+
+      <h3>WebSocket</h3>
+      <p>Conexão <b>contínua, persistente e bidirecional</b>. Usa TCP; HTTP só no <b>handshake</b> (<code>Upgrade: websocket</code>, <code>Connection: Upgrade</code>). URLs <code>ws://</code> e <code>wss://</code> (TLS). Eventos: <code>onopen, onmessage, onclose, onerror</code>. Usos: chat, dashboards IoT, jogos, colaboração, notificações.</p>
+      <table>
+        <tr><th>Característica</th><th>WebSocket</th><th>HTTP / API REST</th></tr>
+        <tr><td>Comunicação</td><td>Bidirecional e contínua</td><td>Requisição-resposta</td></tr>
+        <tr><td>Persistência</td><td>Conexão aberta</td><td>Fecha após a resposta</td></tr>
+        <tr><td>Tempo de resposta</td><td>Imediato</td><td>Depende da requisição</td></tr>
+        <tr><td>Ideal para</td><td>Tempo real (chat, sensores)</td><td>Consultas pontuais (dados, login)</td></tr>
+        <tr><td>Segurança</td><td>wss:// (TLS/SSL)</td><td>https:// (TLS/SSL)</td></tr>
+      </table>
+
+      <h3>APIs e Flask</h3>
+      <p><b>API</b> = conjunto de regras e protocolos para sistemas se comunicarem, acessando funcionalidades <b>sem conhecer a implementação interna</b>.
+      Tipos: <b>REST</b> (HTTP) · <b>SOAP</b> (XML, empresas/bancos) · <b>GraphQL</b> (consultas flexíveis) · APIs de bibliotecas/embarcados.<br>
+      <b>Frameworks REST:</b> Node.js + Express · Django REST Framework · <b>Flask</b> · Spring Boot. Embarcados: Arduino API, PlatformIO, Zephyr/FreeRTOS.</p>
+      <p><b>Flask</b> = microframework web Python, leve e flexível. ✅ fácil, comunidade, extensões (SQLAlchemy, Flask-Login). ❌ não é full-stack, escalabilidade exige organização, menos recursos prontos que Django.</p>
+<pre><code>from flask import Flask, jsonify
+app = Flask(__name__)
+
+@app.route("/temperatura")
+def temperatura():
+    return jsonify({"estacao": "ST1", "valor": 25.3})</code></pre>
+      <h3>JSON × XML</h3>
+      <p>São <b>formatos de dados</b> (não protocolos). JSON: leve, legível, compatível com tudo, padrão REST → <b>maior generalização e baixo custo</b>. XML: mais verboso, usado em SOAP.</p>
+      <div class="pegadinha">⚠️ <b>Questão do JSON (Lista Q17):</b> <code>ST1 | 20250831 | 002-045-001</code> → ordem estacao, data, silo e o silo é <b>composto</b> → array:<br><code>{"estacao": "ST1", "data": "20250831", "silo": ["002", "045", "001"]}</code></div>
+      <button class="btn practice" data-tema="comunicacao">Praticar este tema →</button>
+    </article>
+
+    <!-- 4 -->
+    <article id="r-arquiteturas" class="card resumo">
+      <h2>4. Arquiteturas, Middleware e Memória (complemento da Lista)</h2>
+      <table>
+        <tr><th>Arquitetura</th><th>Ideia</th></tr>
+        <tr><td><b>Monolítica</b></td><td>Tudo em uma aplicação/servidor</td></tr>
+        <tr><td><b>Cliente-servidor</b></td><td>Servidores dedicados processam as requisições dos clientes</td></tr>
+        <tr><td><b>Peer-to-peer</b></td><td>Os próprios participantes dividem a execução, sem servidor central</td></tr>
+        <tr><td><b>SOA</b></td><td>Funcionalidades como <b>serviços reutilizáveis e interoperáveis</b>; flexibilidade e integração de sistemas heterogêneos</td></tr>
+        <tr><td><b>Microsserviços</b></td><td>Serviços pequenos e independentes, cada um com seu banco; <b>threads por serviço</b></td></tr>
+        <tr><td><b>Serverless</b></td><td>Funções em provedores de nuvem (AWS/Azure/GCP), <b>sem gerenciar servidores</b>, escala automática; threads “invisíveis”</td></tr>
+      </table>
+      <div class="compare">
+        <div><h4>Middleware</h4>Camada <b>intermediária</b> que facilita a comunicação, <b>abstrai protocolos</b> e oferece serviços (autenticação, mensageria, transações).</div>
+        <div><h4>API</h4>O <b>contrato</b>: conjunto de regras e interfaces para acessar funcionalidades de um software.</div>
+      </div>
+      <h3>Problemas clássicos</h3>
+      <ul>
+        <li><b>Deadlock:</b> dois ou mais processos bloqueados indefinidamente, cada um esperando um recurso que o outro segura (espera circular).</li>
+        <li><b>while(true) sem saída:</b> loop infinito, consome CPU continuamente e impede outras tarefas.</li>
+        <li><b>C++ new sem delete:</b> <b>memory leak</b> – memória continua alocada; a thread segue, mas o sistema perde eficiência até travar.</li>
+        <li><b>Garbage Collector</b> (C#, Java): gerencia memória automaticamente, evitando vazamentos em ambientes multithread.</li>
+        <li><b>Alto desempenho:</b> minimizar latência entre nós e otimizar recursos, evitando gargalos.</li>
+      </ul>
+      <button class="btn practice" data-tema="arquiteturas">Praticar este tema →</button>
+    </article>
+
+    <!-- 5 -->
+    <article id="r-sincronizacao" class="card resumo">
+      <h2>5. Semáforos e Mutexes</h2>
+      <p>Várias threads + recursos compartilhados (memória, arquivos, dispositivos) <b>sem sincronização</b> = <b>race conditions</b>, dados corrompidos, comportamento indefinido.</p>
+      <ul>
+        <li><b>Concorrência:</b> várias unidades de execução progredindo ao mesmo tempo.</li>
+        <li><b>Sincronização:</b> coordenar o acesso correto aos recursos.</li>
+        <li><b>Exclusão mútua:</b> só <b>uma</b> unidade na <b>região crítica</b> por vez.</li>
+      </ul>
+      <div class="compare">
+        <div><h4>🔒 Mutex</h4>
+          Acesso <b>exclusivo</b>: só 1 thread/processo possui por vez.<br>
+          <b>Local</b> (intra-processo) ou <b>nomeado</b> (inter-processo).<br>
+          Usar quando a operação deve ser <b>atômica</b>.<br>
+          <i>Ex.:</i> lista ligada não thread-safe, escrita em arquivo, hardware exclusivo.</div>
+        <div><h4>🚦 Semáforo</h4>
+          <b>Contador</b> de acessos simultâneos permitidos.<br>
+          <b>Binário</b> (0/1) = mutex · <b>Contável</b> = até N.<br>
+          Usar para limitar concorrência ou sinalizar produtor/consumidor.<br>
+          <i>Ex.:</i> limitar 10 conexões, pool de conexões DB, buffer limitado.</div>
+      </div>
+      <h3>Sincronização × Sinalização</h3>
+      <p><b>Sincronização</b> = coordenar acesso a recursos (mutex, semáforo). <b>Sinalização</b> = comunicar eventos entre threads (ManualResetEvent, AutoResetEvent, condition variables).</p>
+      <h3>Armadilhas</h3>
+      <ul>
+        <li><b>Deadlock</b> – espera circular entre locks.</li>
+        <li><b>Starvation</b> – uma thread nunca obtém o lock.</li>
+        <li><b>Priority inversion</b> – thread de baixa prioridade segura recurso da de alta.</li>
+        <li><b>Segurar lock por muito tempo</b> – reduz a concorrência.</li>
+      </ul>
+      <h3>Boas práticas</h3>
+      <p>Regiões críticas <b>curtas</b> · preferir coleções thread-safe (<code>ConcurrentQueue</code>, <code>ConcurrentDictionary</code>) · não bloquear em I/O longo · usar <b>timeouts</b> e tratar exceções.</p>
+      <h3>APIs de sincronização em C#</h3>
+      <p><code>lock(obj)</code> (açúcar para Monitor) · <code>Monitor.Enter/Exit/TryEnter</code> · <code>Mutex</code> · <code>Semaphore</code> / <code>SemaphoreSlim</code> (Slim: intra-processo, mais rápido) · <code>ReaderWriterLockSlim</code> (muitos leitores, um escritor).</p>
+<pre><code>private readonly object _bloqueioSaldo = new object();   // objeto privado e dedicado
+
+public void Sacar(decimal valor)
+{
+    lock (_bloqueioSaldo)            // só 1 thread por vez aqui dentro
+    {
+        if (saldo >= valor) saldo -= valor;
+    }                                // liberado automaticamente, mesmo com exceção
+}</code></pre>
+      <p><b>Como o lock funciona:</b> (1) objeto de bloqueio privado; (2) quem entra adquire acesso exclusivo, os outros esperam; (3) liberação automática mesmo com exceção; (4) atualizações ficam sequenciais e seguras. A thread que já tem o lock pode readquiri-lo (reentrante).</p>
+      <p><b>Semaphore/SemaphoreSlim:</b> se a contagem é <b>zero</b>, a thread <b>bloqueia</b>; quando alguém chama <code>Release()</code>, uma bloqueada entra.</p>
+      <button class="btn practice" data-tema="sincronizacao">Praticar este tema →</button>
+    </article>
+
+    <!-- 6 -->
+    <article id="r-monitor" class="card resumo">
+      <h2>6. Monitor – Enter | Exit | TryEnter</h2>
+      <p>Classe de <code>System.Threading</code> que permite que <b>apenas uma thread por vez</b> execute uma seção crítica, <b>quando todas usam o mesmo objeto de bloqueio</b>. Analogia: <b>uma chave</b> – uma pessoa entra, altera o estoque e devolve a chave.</p>
+      <p><b>Problema que resolve:</b> <b>race condition</b>. Estoque = 10, duas threads vendem 7 ao mesmo tempo: ambas leem 10 antes de atualizar → vendem 14 itens. Com Monitor, a 2ª só lê depois da 1ª terminar (vê 3 e recusa). <a href="#" class="golab" data-lab="race">Ver no laboratório →</a></p>
+      <p><b>Onde usar:</b> estoque, contas bancárias, sistemas de pedidos, filas/listas compartilhadas, qualquer objeto acessado por várias threads.</p>
+      <table>
+        <tr><th>Método</th><th>Responsabilidade</th></tr>
+        <tr><td><code>Monitor.Enter(bloqueio)</code></td><td>Adquire o bloqueio; se outra thread tem, <b>espera</b></td></tr>
+        <tr><td><code>Monitor.Exit(bloqueio)</code></td><td><b>Libera</b> o bloqueio da thread atual</td></tr>
+        <tr><td><code>bool ok = Monitor.TryEnter(bloqueio, 100)</code></td><td><b>Tenta</b> adquirir por até 100 ms; retorna <b>bool</b></td></tr>
+      </table>
+<pre><code>if (Monitor.TryEnter(_bloqueio, 100))
+{
+    try   { /* região protegida */ }
+    finally { Monitor.Exit(_bloqueio); }   // SEMPRE no finally
+}
+else
+{
+    // não conseguiu em 100 ms → segue outro caminho
+}</code></pre>
+      <h3>Quadro comparativo</h3>
+      <table>
+        <tr><th>Recurso</th><th>Acessos simultâneos</th><th>Entre processos?</th><th>Característica</th></tr>
+        <tr><td><b>lock</b></td><td>1</td><td>Não</td><td>Forma simples e segura; padrão para seções críticas curtas</td></tr>
+        <tr><td><b>Monitor</b></td><td>1 por objeto</td><td>Não</td><td>Controle detalhado: TryEnter, timeout, Wait/Pulse/PulseAll</td></tr>
+        <tr><td><b>Semaphore</b></td><td>Até N</td><td>Sim (nomeado)</td><td>Limita quantas threads acessam</td></tr>
+        <tr><td><b>SemaphoreSlim</b></td><td>Até N</td><td>Não</td><td>Leve, suporta <code>await WaitAsync()</code></td></tr>
+        <tr><td><b>Mutex</b></td><td>1 por Mutex</td><td>Sim (nomeado)</td><td>Bloqueio exclusivo compartilhável entre processos</td></tr>
+      </table>
+<pre><code>// Semaphore: até 3 simultâneos
+using var semaforo = new Semaphore(3, 3);
+semaforo.WaitOne();  try { /* ... */ } finally { semaforo.Release(); }
+
+// SemaphoreSlim: até 3 operações ASSÍNCRONAS
+using var slim = new SemaphoreSlim(3, 3);
+await slim.WaitAsync(); try { await ProcessarAsync(); } finally { slim.Release(); }
+
+// Mutex nomeado: 1 instância do programa por vez
+using var mutex = new Mutex(false, "MeuMutex");
+mutex.WaitOne();  try { /* ... */ } finally { mutex.ReleaseMutex(); }</code></pre>
+      <h3>Exemplo que ajuda a diferenciar (API que consulta serviço externo)</h3>
+      <ul>
+        <li><b>lock</b>: atualização rápida de um contador compartilhado.</li>
+        <li><b>Monitor</b>: tenta o bloqueio por 100 ms e segue outro caminho se não conseguir.</li>
+        <li><b>Semaphore(3)</b>: no máximo 3 acessos simultâneos ao recurso.</li>
+        <li><b>SemaphoreSlim(3)</b>: no máximo 3 operações <b>assíncronas</b> com WaitAsync.</li>
+        <li><b>Mutex</b> nomeado: impede duas <b>instâncias do programa</b> de executarem a mesma tarefa.</li>
+      </ul>
+      <button class="btn practice" data-tema="monitor">Praticar este tema →</button>
+    </article>
+
+    <!-- 7 -->
+    <article id="r-eventos" class="card resumo">
+      <h2>7. ManualResetEvent | AutoResetEvent</h2>
+      <p><b>Problema:</b> como uma thread <b>avisa</b> outra? Thread A (produtora) inicializa algo; Thread B (consumidora) não pode seguir antes. Como bloquear B <b>sem ficar consultando uma variável em loop</b>? → <b>mecanismo de sinalização</b>.</p>
+      <ul>
+        <li>Dois estados: <b>sinalizado</b> (signaled) e <b>não sinalizado</b> (non-signaled).</li>
+        <li><code>WaitOne()</code> aguarda · <code>Set()</code> sinaliza · <code>Reset()</code> volta a não sinalizado.</li>
+        <li>A diferença é <b>o que acontece depois que uma espera é liberada</b>.</li>
+      </ul>
+      <div class="compare">
+        <div><h4>🚪 ManualResetEvent — “portão”</h4>
+          <code>Set()</code> libera <b>TODAS</b> as threads aguardando. Continua <b>aberto</b> (novos WaitOne passam direto) até alguém chamar <code>Reset()</code>.<br><br>
+          <b>Uso:</b> “a inicialização terminou, todos podem começar”.<br>
+          <b>Risco:</b> esquecer o Reset() e deixar todos passarem.</div>
+        <div><h4>🎫 AutoResetEvent — “catraca”</h4>
+          <code>Set()</code> libera <b>UMA</b> thread e o evento <b>volta sozinho</b> a não sinalizado.<br><br>
+          <b>Uso:</b> “chegou uma unidade de trabalho; um consumidor pode seguir”.<br>
+          <b>Risco:</b> esperar vários sinais sem perceber como eles se acumulam/são consumidos (o estado é um só: vários Set() seguidos sem ninguém esperando valem como <b>um</b> sinal).</div>
+      </div>
+<pre><code>using var pronto = new ManualResetEvent(false);      // false = começa fechado
+var w1 = Task.Run(() => { pronto.WaitOne(); Console.WriteLine("Worker 1 continuou"); });
+var w2 = Task.Run(() => { pronto.WaitOne(); Console.WriteLine("Worker 2 continuou"); });
+Thread.Sleep(1000);                                  // simula inicialização
+pronto.Set();                                        // libera os DOIS
+await Task.WhenAll(w1, w2);
+
+using var sinal = new AutoResetEvent(false);
+var consumidor = Task.Run(() => { sinal.WaitOne(); Console.WriteLine("Recebi o sinal"); });
+sinal.Set();                                         // libera UM e fecha sozinho
+await consumidor;</code></pre>
+      <table>
+        <tr><th>Aspecto</th><th>ManualResetEvent</th><th>AutoResetEvent</th></tr>
+        <tr><td>Quem é liberado?</td><td>Todas as threads aguardando</td><td>Uma thread</td></tr>
+        <tr><td>Depois de Set()</td><td>Continua sinalizado</td><td>Volta a não sinalizado</td></tr>
+        <tr><td>Reset() manual</td><td>Necessário para bloquear de novo</td><td>Não é necessário</td></tr>
+        <tr><td>Uso típico</td><td>Avisar que a inicialização terminou</td><td>Entregar um sinal/trabalho a um consumidor</td></tr>
+        <tr><td>Risco</td><td>Esquecer Reset()</td><td>Contar sinais errado</td></tr>
+      </table>
+      <p><b>Aplicações:</b> inicialização de serviço · testes concorrentes (largada simultânea) · produtor/consumidor · encerramento coordenado · pausar/retomar workers · aguardar recurso pronto.</p>
+      <p><b>Como escolher?</b> “Quantas threads devem avançar quando o sinal chegar?” <b>Várias → Manual</b>. <b>Uma por sinal → Auto</b>.</p>
+      <div class="pegadinha">💡 Regra prática: não bloqueie uma thread à toa quando pode <b>aguardar uma Task</b> assincronamente. Para filas reais, <code>Channel&lt;T&gt;</code> é melhor. Eventos <b>sinalizam</b>; para <b>proteger dados</b> use exclusão mútua (lock/Mutex).</div>
+      <a href="#" class="golab btn ghost" data-lab="eventos">Ver no laboratório →</a>
+      <button class="btn practice" data-tema="eventos">Praticar este tema →</button>
+    </article>
+
+    <article id="r-comparativo" class="card resumo">
+      <h2>⭐ Quadro geral: qual primitiva usar?</h2>
+      <table>
+        <tr><th>Preciso de...</th><th>Use</th></tr>
+        <tr><td>Proteger uma variável/objeto (1 por vez), código síncrono</td><td><b>lock</b></td></tr>
+        <tr><td>1 por vez, mas com tempo limite / desistir se ocupado</td><td><b>Monitor.TryEnter</b></td></tr>
+        <tr><td>Exclusividade entre <b>processos/instâncias</b></td><td><b>Mutex nomeado</b></td></tr>
+        <tr><td>Até N simultâneos (pool, conexões)</td><td><b>Semaphore</b> / <b>SemaphoreSlim</b></td></tr>
+        <tr><td>Até N simultâneos com <b>async/await</b></td><td><b>SemaphoreSlim + WaitAsync</b></td></tr>
+        <tr><td>Avisar <b>todas</b> as threads que algo ficou pronto</td><td><b>ManualResetEvent</b></td></tr>
+        <tr><td>Liberar <b>uma</b> thread por sinal</td><td><b>AutoResetEvent</b></td></tr>
+        <tr><td>Várias tarefas assíncronas e aguardar todas</td><td><b>Task.WhenAll</b></td></tr>
+        <tr><td>Esperar sem bloquear</td><td><b>await Task.Delay</b> (nunca Thread.Sleep em async)</td></tr>
+        <tr><td>Mensagens ordenadas e garantidas entre serviços</td><td><b>RabbitMQ</b></td></tr>
+        <tr><td>Telemetria IoT leve</td><td><b>MQTT</b></td></tr>
+        <tr><td>Tempo real bidirecional (chat/dashboard)</td><td><b>WebSocket</b></td></tr>
+      </table>
+    </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ QUIZ ============================ -->
+<section id="view-quiz" class="view">
+  <div class="card" id="quiz-setup">
+    <h2>❓ Quiz com correção imediata</h2>
+    <p>Escolha um conjunto de questões. Você vê a resposta e a explicação na hora.</p>
+    <div class="quiz-options" id="quiz-options"></div>
+  </div>
+  <div id="quiz-area" class="hidden"></div>
+</section>
+
+<!-- ============================ SIMULADO ============================ -->
+<section id="view-simulado" class="view">
+  <div class="card" id="sim-setup">
+    <h2>📝 Simulado de prova</h2>
+    <p>Questões aleatórias de todos os temas, alternativas embaralhadas, <b>sem correção até o final</b>. Cronômetro ligado.</p>
+    <label>Número de questões:
+      <select id="sim-n"><option>10</option><option selected>20</option><option>30</option><option>50</option></select>
+    </label>
+    <label><input type="checkbox" id="sim-lista"> Só questões da Lista 1</label>
+    <br><br>
+    <button class="btn" id="sim-start">Começar simulado</button>
+  </div>
+  <div id="sim-area" class="hidden"></div>
+</section>
+
+<!-- ============================ FLASHCARDS ============================ -->
+<section id="view-flash" class="view">
+  <div class="card center">
+    <h2>🃏 Flashcards</h2>
+    <p class="muted">Clique no cartão (ou Espaço) para virar. ← → para navegar.</p>
+    <div class="flash-wrap">
+      <div class="flashcard" id="flashcard">
+        <div class="face front" id="flash-front"></div>
+        <div class="face back" id="flash-back"></div>
+      </div>
+    </div>
+    <div class="flash-ctrl">
+      <button class="btn ghost" id="flash-prev">←</button>
+      <span id="flash-count"></span>
+      <button class="btn ghost" id="flash-next">→</button>
+      <button class="btn ghost" id="flash-shuffle">🔀 Embaralhar</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ DISCURSIVAS ============================ -->
+<section id="view-discursivas" class="view">
+  <div class="card">
+    <h2>✍️ Questões discursivas</h2>
+    <p>Escreva sua resposta, depois revele a resposta-modelo e confira os <b>pontos-chave</b> que o professor provavelmente vai buscar.</p>
+  </div>
+  <div id="disc-list"></div>
+</section>
+
+<!-- ============================ LAB ============================ -->
+<section id="view-lab" class="view">
+  <div class="lab-tabs" id="lab-tabs">
+    <button data-lab="race" class="active">🏁 Race condition</button>
+    <button data-lab="semaforo">🚦 Semáforo / Mutex</button>
+    <button data-lab="eventos">🚪 Manual vs Auto ResetEvent</button>
+    <button data-lab="async">⏱️ Síncrono vs Assíncrono</button>
+    <button data-lab="deadlock">💀 Deadlock</button>
+  </div>
+
+  <div class="card lab" id="lab-race">
+    <h2>🏁 Race condition: estoque com 10 itens, duas vendas de 7</h2>
+    <p>Cada thread faz: <b>1) ler estoque → 2) verificar se dá → 3) gravar novo valor</b>. Sem proteção, as etapas se intercalam.</p>
+    <label class="switch"><input type="checkbox" id="race-lock"> Usar <code>lock</code> / Monitor</label>
+    <button class="btn" id="race-run">▶ Executar</button>
+    <div class="race-grid">
+      <div class="thread-col"><h4>Thread A (vende 7)</h4><div id="race-a" class="log"></div></div>
+      <div class="estoque"><div>Estoque</div><div class="big" id="race-est">10</div><div id="race-lockicon" class="lockicon">🔓</div><div id="race-vend" class="muted">Vendidos: 0</div></div>
+      <div class="thread-col"><h4>Thread B (vende 7)</h4><div id="race-b" class="log"></div></div>
+    </div>
+    <div id="race-result" class="result"></div>
+  </div>
+
+  <div class="card lab hidden" id="lab-semaforo">
+    <h2>🚦 Semáforo: até N threads na região crítica</h2>
+    <p>Ajuste N. Com <b>N = 1</b> o semáforo é <b>binário</b> = funciona como um <b>Mutex</b>. Clique em uma thread dentro da região para dar <code>Release()</code>.</p>
+    <label>Vagas (N): <input type="range" id="sem-n" min="1" max="5" value="3"> <b id="sem-nv">3</b></label>
+    <button class="btn" id="sem-add">+ Nova thread chama WaitOne()</button>
+    <button class="btn ghost" id="sem-reset">Reiniciar</button>
+    <div class="sem-box">
+      <div><h4>Fila de espera (bloqueadas)</h4><div id="sem-queue" class="tokens"></div></div>
+      <div class="sem-crit"><h4>Região crítica <span id="sem-count"></span></h4><div id="sem-in" class="tokens"></div></div>
+    </div>
+    <pre><code id="sem-code"></code></pre>
+  </div>
+
+  <div class="card lab hidden" id="lab-eventos">
+    <h2>🚪 ManualResetEvent vs 🎫 AutoResetEvent</h2>
+    <label class="radio"><input type="radio" name="evmode" value="manual" checked> ManualResetEvent</label>
+    <label class="radio"><input type="radio" name="evmode" value="auto"> AutoResetEvent</label>
+    <div class="ev-ctrl">
+      <button class="btn" id="ev-wait">+ Thread chama WaitOne()</button>
+      <button class="btn ok" id="ev-set">Set()</button>
+      <button class="btn warn" id="ev-reset">Reset()</button>
+      <button class="btn ghost" id="ev-clear">Limpar</button>
+    </div>
+    <div class="ev-stage">
+      <div><h4>Aguardando</h4><div id="ev-wait-list" class="tokens"></div></div>
+      <div class="gate" id="ev-gate">🔴<div id="ev-state">NÃO SINALIZADO</div></div>
+      <div><h4>Passaram</h4><div id="ev-pass-list" class="tokens"></div></div>
+    </div>
+    <div id="ev-log" class="log tall"></div>
+  </div>
+
+  <div class="card lab hidden" id="lab-async">
+    <h2>⏱️ Síncrono vs Assíncrono (Task.WhenAll)</h2>
+    <p>Três chamadas de API (PIX) que demoram 1s, 2s e 3s.</p>
+    <button class="btn" id="as-sync">▶ Síncrono (await um por um / bloqueante)</button>
+    <button class="btn ok" id="as-async">▶ Assíncrono (Task.WhenAll)</button>
+    <div id="as-bars"></div>
+    <div id="as-ui" class="result"></div>
+<pre><code>// Síncrono: total = 1 + 2 + 3 = 6s
+await PixAsync(1); await PixAsync(2); await PixAsync(3);
+
+// Concorrente: total ≈ 3s (a mais lenta)
+await Task.WhenAll(PixAsync(1), PixAsync(2), PixAsync(3));</code></pre>
+  </div>
+
+  <div class="card lab hidden" id="lab-deadlock">
+    <h2>💀 Deadlock: espera circular</h2>
+    <p>Thread 1 pega o <b>Recurso A</b> e quer o <b>B</b>. Thread 2 pega o <b>B</b> e quer o <b>A</b>.</p>
+    <label class="switch"><input type="checkbox" id="dl-order"> Corrigir: ambas pegam os locks na <b>mesma ordem</b> (A → B)</label>
+    <button class="btn" id="dl-run">▶ Executar</button>
+    <div class="dl-stage">
+      <div class="dl-node" id="dl-t1">Thread 1</div>
+      <div class="dl-res" id="dl-ra">🔓 Recurso A</div>
+      <div class="dl-res" id="dl-rb">🔓 Recurso B</div>
+      <div class="dl-node" id="dl-t2">Thread 2</div>
+    </div>
+    <div id="dl-log" class="log tall"></div>
+  </div>
+</section>
+</main>
+
+<footer>Material de estudo gerado a partir dos slides da disciplina. Bons estudos! 🍀</footer>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
