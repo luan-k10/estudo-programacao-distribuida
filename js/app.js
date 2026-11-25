@@ -6,18 +6,37 @@
   const shuffle = arr => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const L = "ABCDE";
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+  };
 
-  QUESTOES.forEach((q, i) => q.id = i);
+  QUESTOES.forEach((q, i) => { q.id = i; });
+  $("#ano").textContent = new Date().getFullYear();
+
+  // ---------------- tema claro/escuro (igual ao portfólio) ----------------
+  $("#theme-toggle").addEventListener("click", () => {
+    const root = document.documentElement;
+    const next = root.dataset.theme === "dark" ? "light" : "dark";
+    root.dataset.theme = next;
+    store.set("theme", next);
+  });
+
+  // ---------------- tabelas empilháveis: rótulos para o celular ----------------
+  $$("table.stack").forEach(t => {
+    const heads = $$("thead th", t).map(th => th.textContent.trim());
+    $$("tbody tr", t).forEach(tr => $$("td", tr).forEach((td, i) => td.setAttribute("data-l", heads[i] || "")));
+  });
 
   // ---------------- progresso (localStorage) ----------------
   const KEY = "pdp-progresso-v1";
   let prog = {};
-  try { prog = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { prog = {}; }
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(prog)); } catch {} };
+  try { prog = JSON.parse(store.get(KEY)) || {}; } catch { prog = {}; }
+  const save = () => store.set(KEY, JSON.stringify(prog));
   const registrar = (q, ok) => { prog[q.id] = ok ? 1 : 0; save(); };
 
   function renderStats() {
-    const ids = Object.keys(prog);
+    const ids = Object.keys(prog).filter(k => QUESTOES[k]);
     const certas = ids.filter(k => prog[k] === 1).length;
     $("#st-total").textContent = ids.length;
     $("#st-acerto").textContent = ids.length ? Math.round(certas * 100 / ids.length) + "%" : "0%";
@@ -35,19 +54,35 @@
 
   // ---------------- navegação ----------------
   function go(view) {
+    if (!$("#view-" + view)) view = "inicio";
     $$("#nav button").forEach(b => b.classList.toggle("active", b.dataset.view === view));
     $$(".view").forEach(v => v.classList.toggle("active", v.id === "view-" + view));
     if (view === "inicio") renderStats();
     if (view === "quiz") { $("#quiz-setup").classList.remove("hidden"); $("#quiz-area").classList.add("hidden"); renderQuizOptions(); }
+    if (view !== "simulado") clearInterval(simTimer);
+    const active = $(`#nav button[data-view="${view}"]`);
+    if (active) active.scrollIntoView({ block: "nearest", inline: "center" });
+    if (history.replaceState) history.replaceState(null, "", view === "inicio" ? location.pathname : "#" + view);
     window.scrollTo(0, 0);
   }
   $$("#nav button").forEach(b => b.addEventListener("click", () => go(b.dataset.view)));
-  $$("[data-go]").forEach(b => b.addEventListener("click", e => { e.preventDefault(); go(b.dataset.go); }));
+  $$("[data-go]").forEach(b => b.addEventListener("click", e => {
+    e.preventDefault();
+    go(b.dataset.go);
+    if (b.dataset.lab) openLab(b.dataset.lab);
+  }));
   $$(".practice[data-tema]").forEach(b => b.addEventListener("click", () => {
     go("quiz");
     startQuiz(TEMAS[b.dataset.tema], shuffle(QUESTOES.filter(q => q.t === b.dataset.tema)));
   }));
-  $$(".golab[data-lab]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); go("lab"); openLab(a.dataset.lab); }));
+
+  // Índice de temas: abre o <details> e rola até ele
+  $$(".week-index a").forEach(a => a.addEventListener("click", e => {
+    e.preventDefault();
+    const d = $("#" + a.dataset.week);
+    d.open = true;
+    d.scrollIntoView({ behavior: "smooth", block: "start" });
+  }));
 
   // ---------------- quiz ----------------
   function prep(q, embaralhar) {
@@ -59,8 +94,9 @@
   function renderQuizOptions() {
     const erradas = QUESTOES.filter(q => prog[q.id] === 0);
     const nunca = QUESTOES.filter(q => prog[q.id] === undefined);
+    const lista1 = QUESTOES.filter(q => q.f.startsWith("Lista"));
     const opts = [
-      { nome: "📋 Lista 1 do professor", sub: "25 questões objetivas na ordem original", fn: () => startQuiz("Lista 1", QUESTOES.filter(q => q.f.startsWith("Lista")), false) },
+      { nome: "📋 Lista 1 do professor", sub: `${lista1.length} questões objetivas na ordem original`, fn: () => startQuiz("Lista 1", lista1, false) },
       { nome: "🎲 Todas misturadas", sub: `${QUESTOES.length} questões`, fn: () => startQuiz("Todas", shuffle(QUESTOES)) },
       { nome: "🆕 Ainda não respondidas", sub: `${nunca.length} questões`, fn: () => nunca.length ? startQuiz("Não respondidas", shuffle(nunca)) : alert("Você já respondeu todas!") },
       { nome: "🔁 Revisar erradas", sub: `${erradas.length} questões`, fn: () => erradas.length ? startQuiz("Revisão de erradas", shuffle(erradas)) : alert("Nenhuma questão errada para revisar 🎉") },
@@ -70,6 +106,7 @@
     box.innerHTML = "";
     opts.forEach(o => {
       const b = document.createElement("button");
+      b.type = "button";
       b.innerHTML = `<b>${esc(o.nome)}</b><small>${esc(o.sub)}</small>`;
       b.addEventListener("click", o.fn);
       box.appendChild(b);
@@ -87,14 +124,14 @@
     function render() {
       const it = itens[i], q = it.q, r = resp[i];
       area.innerHTML = `<div class="card">
-        <div class="qhead"><span><b>${esc(titulo)}</b> · ${esc(q.f)} · ${esc(TEMAS[q.t])}</span><span>Questão ${i + 1}/${itens.length} · ✅ ${acertos}</span></div>
+        <div class="qhead"><span><b>${esc(titulo)}</b> · ${esc(q.f)}${titulo === TEMAS[q.t] ? "" : " · " + esc(TEMAS[q.t])}</span><span id="q-score">Questão ${i + 1}/${itens.length} · ✅ ${acertos}</span></div>
         <div class="progressline"><div style="width:${(i + 1) * 100 / itens.length}%"></div></div>
         <div class="qtext">${esc(q.q)}</div>
-        <div id="opts">${it.ord.map((oi, k) => `<button class="opt" data-k="${k}"><span class="l">${L[k]})</span>${esc(q.o[oi])}</button>`).join("")}</div>
+        <div id="opts">${it.ord.map((oi, k) => `<button type="button" class="opt" data-k="${k}"><span class="l">${L[k]})</span><span>${esc(q.o[oi])}</span></button>`).join("")}</div>
         <div id="explic"></div>
-        <div class="qnav"><button class="btn ghost" id="q-prev" ${i === 0 ? "disabled" : ""}>← Anterior</button>
-        <button class="btn ghost" id="q-sair">Sair</button>
-        <button class="btn" id="q-next">${i === itens.length - 1 ? "Finalizar" : "Próxima →"}</button></div></div>`;
+        <div class="qnav"><button type="button" class="btn" id="q-prev" ${i === 0 ? "disabled" : ""}>← Anterior</button>
+        <button type="button" class="btn" id="q-sair">Sair</button>
+        <button type="button" class="btn btn-primary" id="q-next">${i === itens.length - 1 ? "Finalizar" : "Próxima →"}</button></div></div>`;
       if (r !== null) mostrar(r);
       $$("#opts .opt", area).forEach(b => b.addEventListener("click", () => {
         if (resp[i] !== null) return;
@@ -104,7 +141,7 @@
         if (ok) acertos++;
         registrar(q, ok);
         mostrar(k);
-        $(".qhead span:last-child", area).textContent = `Questão ${i + 1}/${itens.length} · ✅ ${acertos}`;
+        $("#q-score").textContent = `Questão ${i + 1}/${itens.length} · ✅ ${acertos}`;
       }));
       $("#q-prev").onclick = () => { i--; render(); };
       $("#q-next").onclick = () => { if (i < itens.length - 1) { i++; render(); } else fim(); };
@@ -127,7 +164,7 @@
         <div class="score-big" style="color:${pct >= 70 ? "var(--ok)" : pct >= 50 ? "var(--warn)" : "var(--bad)"}">${pct}%</div>
         <p>${acertos} acertos de ${resp_} respondidas (${itens.length} no total).</p>
         <p class="muted">${pct >= 70 ? "Mandou bem! Tente o simulado." : "Releia os resumos dos temas em que errou e use \"Revisar erradas\"."}</p>
-        <button class="btn" id="q-again">Escolher outro conjunto</button></div>`;
+        <button type="button" class="btn btn-primary" id="q-again">Escolher outro conjunto</button></div>`;
       $("#q-again").onclick = () => go("quiz");
     }
     render();
@@ -157,11 +194,11 @@
         <div class="qhead"><span>Simulado · Questão ${i + 1}/${itens.length} · respondidas ${respondidas}</span><span class="timer" id="sim-time">⏱ ${tempo()}</span></div>
         <div class="progressline"><div style="width:${respondidas * 100 / itens.length}%"></div></div>
         <div class="qtext">${esc(it.q.q)}</div>
-        <div id="opts">${it.ord.map((oi, k) => `<button class="opt ${resp[i] === k ? "sel" : ""}" data-k="${k}"><span class="l">${L[k]})</span>${esc(it.q.o[oi])}</button>`).join("")}</div>
-        <div class="qnav"><button class="btn ghost" id="s-prev" ${i === 0 ? "disabled" : ""}>← Anterior</button>
-        <button class="btn warn" id="s-end">Entregar prova</button>
-        <button class="btn" id="s-next" ${i === itens.length - 1 ? "disabled" : ""}>Próxima →</button></div></div>`;
-      $$("#opts .opt", area).forEach(b => b.addEventListener("click", () => {
+        <div id="s-opts">${it.ord.map((oi, k) => `<button type="button" class="opt ${resp[i] === k ? "sel" : ""}" data-k="${k}"><span class="l">${L[k]})</span><span>${esc(it.q.o[oi])}</span></button>`).join("")}</div>
+        <div class="qnav"><button type="button" class="btn" id="s-prev" ${i === 0 ? "disabled" : ""}>← Anterior</button>
+        <button type="button" class="btn btn-warn" id="s-end">Entregar prova</button>
+        <button type="button" class="btn btn-primary" id="s-next" ${i === itens.length - 1 ? "disabled" : ""}>Próxima →</button></div></div>`;
+      $$("#s-opts .opt", area).forEach(b => b.addEventListener("click", () => {
         resp[i] = +b.dataset.k;
         if (i < itens.length - 1) { i++; render(); } else render();
       }));
@@ -189,7 +226,7 @@
         <div class="score-big" style="color:${nota >= 7 ? "var(--ok)" : nota >= 5 ? "var(--warn)" : "var(--bad)"}">${nota}</div>
         <p>${acertos}/${itens.length} acertos · tempo ${tempo()}</p>
         <div style="max-width:600px;margin:auto;text-align:left">${Object.entries(porTema).map(([t, [a, n]]) => `<div class="prog-row"><span>${esc(TEMAS[t])}</span><div class="bar"><div style="width:${a * 100 / n}%"></div></div><span class="muted">${a}/${n}</span></div>`).join("")}</div>
-        <button class="btn" id="s-new">Novo simulado</button></div>
+        <button type="button" class="btn btn-primary" id="s-new">Novo simulado</button></div>
         <div class="card"><h3 style="margin-top:0">Correção</h3>${itens.map((it, k) => {
           const r = resp[k], ok = r === it.correta;
           return `<div class="review-item"><b class="${ok ? "ok" : "bad"}">${ok ? "✅" : "❌"} ${k + 1}.</b> ${esc(it.q.q)}<br>
@@ -205,37 +242,48 @@
   // ---------------- flashcards ----------------
   let cards = [...FLASHCARDS], fi = 0;
   const fc = $("#flashcard");
+  function setSide(flip) {
+    fc.classList.toggle("flip", flip);
+    $("#flash-side").textContent = flip ? "Resposta" : "Pergunta";
+  }
   function renderCard() {
-    fc.classList.remove("flip");
-    setTimeout(() => {
-      $("#flash-front").textContent = cards[fi][0];
-      $("#flash-back").innerHTML = cards[fi][1];
-    }, 150);
+    setSide(false);
+    $("#flash-front").textContent = cards[fi][0];
+    $("#flash-back").innerHTML = cards[fi][1];
     $("#flash-count").textContent = `${fi + 1} / ${cards.length}`;
   }
-  fc.addEventListener("click", () => fc.classList.toggle("flip"));
+  fc.addEventListener("click", () => setSide(!fc.classList.contains("flip")));
+  fc.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); setSide(!fc.classList.contains("flip")); } });
   $("#flash-prev").onclick = () => { fi = (fi - 1 + cards.length) % cards.length; renderCard(); };
   $("#flash-next").onclick = () => { fi = (fi + 1) % cards.length; renderCard(); };
   $("#flash-shuffle").onclick = () => { cards = shuffle(cards); fi = 0; renderCard(); };
   document.addEventListener("keydown", e => {
     if (!$("#view-flash").classList.contains("active") || /TEXTAREA|INPUT|SELECT/.test(document.activeElement.tagName)) return;
-    if (e.key === " ") { e.preventDefault(); fc.classList.toggle("flip"); }
+    if (e.key === " ") { e.preventDefault(); setSide(!fc.classList.contains("flip")); }
     if (e.key === "ArrowRight") $("#flash-next").click();
     if (e.key === "ArrowLeft") $("#flash-prev").click();
   });
-  $("#flash-front").textContent = cards[0][0];
-  $("#flash-back").innerHTML = cards[0][1];
-  $("#flash-count").textContent = `1 / ${cards.length}`;
+  renderCard();
 
   // ---------------- discursivas ----------------
-  $("#disc-list").innerHTML = DISCURSIVAS.map((d, i) => `<div class="card disc">
-    <div class="qhead"><span>${esc(d.f)} · ${esc(TEMAS[d.t] || "")}</span></div>
+  const grupo = d => d.f.split(" – ")[0];
+  const grupos = [...new Set(DISCURSIVAS.map(grupo))];
+  let discFiltro = "";
+  $("#disc-filter").innerHTML = [`<button type="button" data-g="" class="active">Todas (${DISCURSIVAS.length})</button>`,
+    ...grupos.map(g => `<button type="button" data-g="${esc(g)}">${esc(g)} (${DISCURSIVAS.filter(d => grupo(d) === g).length})</button>`)].join("");
+  $("#disc-list").innerHTML = DISCURSIVAS.map((d, i) => `<div class="card disc" data-g="${esc(grupo(d))}">
+    <div class="qhead"><span class="src">${esc(d.f)}</span><span>${esc(TEMAS[d.t] || "")}</span></div>
     <div class="qtext">${esc(d.q)}</div>
-    <textarea placeholder="Escreva sua resposta aqui antes de ver o modelo..." data-i="${i}"></textarea>
-    <button class="btn" data-show="${i}">Ver resposta-modelo</button>
+    <textarea placeholder="Escreva sua resposta aqui antes de ver o modelo..." data-i="${i}" aria-label="Sua resposta"></textarea>
+    <button type="button" class="btn" data-show="${i}">Ver resposta-modelo</button>
     <div class="modelo hidden" id="disc-${i}">${d.r}
       <p><b>Confira se sua resposta tem os pontos-chave:</b></p>
-      <div class="chk">${d.k.map(k => `<label><input type="checkbox"> ${esc(k)}</label>`).join("")}</div></div></div>`).join("");
+      <div class="chk">${d.k.map(k => `<label><input type="checkbox"> <span>${esc(k)}</span></label>`).join("")}</div></div></div>`).join("");
+  $$("#disc-filter button").forEach(b => b.addEventListener("click", () => {
+    discFiltro = b.dataset.g;
+    $$("#disc-filter button").forEach(x => x.classList.toggle("active", x.dataset.g === discFiltro));
+    $$("#disc-list .disc").forEach(c => c.classList.toggle("hidden", !!discFiltro && c.dataset.g !== discFiltro));
+  }));
   $$("#disc-list [data-show]").forEach(b => b.addEventListener("click", () => {
     const m = $("#disc-" + b.dataset.show);
     m.classList.toggle("hidden");
@@ -243,14 +291,16 @@
   }));
   $$("#disc-list textarea").forEach(t => {
     const k = "pdp-disc-" + t.dataset.i;
-    t.value = localStorage.getItem(k) || "";
-    t.addEventListener("input", () => localStorage.setItem(k, t.value));
+    t.value = store.get(k) || "";
+    t.addEventListener("input", () => store.set(k, t.value));
   });
 
   // ---------------- laboratório ----------------
   function openLab(id) {
     $$("#lab-tabs button").forEach(b => b.classList.toggle("active", b.dataset.lab === id));
     $$(".lab").forEach(l => l.classList.toggle("hidden", l.id !== "lab-" + id));
+    const b = $(`#lab-tabs button[data-lab="${id}"]`);
+    if (b) b.scrollIntoView({ block: "nearest", inline: "center" });
   }
   $$("#lab-tabs button").forEach(b => b.addEventListener("click", () => openLab(b.dataset.lab)));
   const logTo = (el, html) => { const d = document.createElement("div"); d.innerHTML = html; el.appendChild(d); el.scrollTop = el.scrollHeight; };
@@ -420,4 +470,7 @@
 
   renderStats();
   renderQuizOptions();
+  const h = location.hash.slice(1);
+  if (h && $("#view-" + h)) go(h);
+  window.addEventListener("hashchange", () => { const v = location.hash.slice(1); if ($("#view-" + v)) go(v); });
 })();

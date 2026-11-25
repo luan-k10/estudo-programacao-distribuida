@@ -1,94 +1,133 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Estudo – Programação Distribuída e Paralela</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Estudo PDP · Programação Distribuída e Paralela</title>
+  <meta name="description" content="Resumos, quiz com a Lista 1, simulado, flashcards, questões discursivas e laboratório interativo para estudar Programação Distribuída e Paralela.">
+  <meta name="author" content="Luan Kairo de Souza das Neves">
+  <meta name="theme-color" content="#6e1423">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%236e1423'/%3E%3Cpath fill='%23fff' d='M14.41 10 L17.52 10 L17.52 50.89 L42.49 50.89 L27 34.11 L29.29 32 L49.59 54 L14.41 54 Z M42.57 10 L46.88 10 L20.58 37.32 L20.58 32.84 Z'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    (() => {
+      let t = null;
+      try { t = localStorage.getItem('theme'); } catch (e) {}
+      document.documentElement.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    })();
+  </script>
 </head>
 <body>
-<header class="topbar">
-  <div class="brand">⚡ PDP <span>Programação Distribuída & Paralela</span></div>
-  <nav id="nav">
-    <button data-view="inicio" class="active">🏠 Início</button>
-    <button data-view="resumos">📚 Resumos</button>
-    <button data-view="quiz">❓ Quiz</button>
-    <button data-view="simulado">📝 Simulado</button>
-    <button data-view="flash">🃏 Flashcards</button>
-    <button data-view="discursivas">✍️ Discursivas</button>
-    <button data-view="lab">🧪 Laboratório</button>
+<header class="header">
+  <nav class="container topbar" aria-label="Principal">
+    <a class="brand" href="#" data-go="inicio">
+      <svg class="mark" viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
+        <rect width="64" height="64" rx="12"/>
+        <path d="M14.41 10 L17.52 10 L17.52 50.89 L42.49 50.89 L27 34.11 L29.29 32 L49.59 54 L14.41 54 Z M42.57 10 L46.88 10 L20.58 37.32 L20.58 32.84 Z"/>
+      </svg>
+      <span>Estudo PDP</span>
+    </a>
+    <ul class="menu" id="nav">
+      <li><button data-view="inicio" class="active">Início</button></li>
+      <li><button data-view="resumos">Resumos</button></li>
+      <li><button data-view="quiz">Quiz</button></li>
+      <li><button data-view="simulado">Simulado</button></li>
+      <li><button data-view="flash">Flashcards</button></li>
+      <li><button data-view="discursivas">Discursivas</button></li>
+      <li><button data-view="lab">Laboratório</button></li>
+    </ul>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Alternar modo escuro" title="Alternar tema">
+      <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
   </nav>
 </header>
 
-<main>
-<!-- ============================ INÍCIO ============================ -->
-<section id="view-inicio" class="view active">
+<main class="container">
+
+<!-- ======================= INÍCIO ======================= -->
+<section class="view active" id="view-inicio">
   <div class="hero">
-    <h1>Guia de estudo para a prova</h1>
-    <p>Baseado nos slides do Prof. Jacques Oliveira (Multivix) e na <b>Lista 1 de exercícios</b>. Tudo resumido, com questões comentadas, simulações interativas e respostas-modelo das discursivas.</p>
+    <p class="eyebrow">Material de estudo · Prof. Jacques Oliveira (Multivix)</p>
+    <h1>Programação Distribuída <em>e Paralela</em></h1>
+    <p class="lead">Baseado nos slides da disciplina e na <b>Lista 1 de exercícios</b>: resumos diretos, questões comentadas, simulado cronometrado, flashcards, respostas-modelo das discursivas e simulações interativas.</p>
+    <ul class="tags">
+      <li class="tag">Sistemas distribuídos</li><li class="tag">Threads e async/await</li><li class="tag">Comunicação</li>
+      <li class="tag">Semáforo e Mutex</li><li class="tag">Monitor</li><li class="tag">Manual/AutoResetEvent</li>
+    </ul>
+    <div class="actions">
+      <button class="btn btn-primary" data-go="resumos">📖 Começar pelos resumos</button>
+      <button class="btn" data-go="quiz">🎯 Quiz da Lista 1</button>
+      <button class="btn" data-go="simulado">⏱ Fazer simulado</button>
+    </div>
   </div>
 
-  <div class="grid3">
-    <div class="card stat"><div class="big" id="st-total">0</div><div>questões respondidas</div></div>
-    <div class="card stat"><div class="big" id="st-acerto">0%</div><div>taxa de acerto</div></div>
-    <div class="card stat"><div class="big" id="st-erradas">0</div><div>para revisar</div></div>
+  <h2 class="section-title">Seu progresso</h2>
+  <div class="stats">
+    <div class="card stat"><b id="st-total">0</b><span>respondidas</span></div>
+    <div class="card stat"><b id="st-acerto">0%</b><span>de acerto</span></div>
+    <div class="card stat"><b id="st-erradas">0</b><span>para revisar</span></div>
   </div>
-
   <div class="card">
-    <h2>🗺️ Roteiro sugerido (≈ 3 horas)</h2>
-    <ol class="roteiro">
-      <li><b>Leia os resumos</b> na ordem (40 min). Foque nas caixas <span class="tag warn">⚠️ Pegadinha</span>.</li>
-      <li><b>Faça o Quiz da Lista 1</b> — são as questões oficiais do professor (30 min). Leia todas as explicações.</li>
+    <div id="progresso-temas"></div>
+    <p class="small muted" style="margin-top:.8rem">O progresso fica salvo só neste navegador. <button class="btn btn-sm" id="btn-reset" type="button">Zerar progresso</button></p>
+  </div>
+
+  <h2 class="section-title" style="margin-top:2rem">Roteiro sugerido (≈ 3 horas)</h2>
+  <div class="card">
+    <ol>
+      <li><b>Leia os resumos</b> na ordem (40 min). Foque nos quadros <b>⚠️ Pegadinha</b>.</li>
+      <li><b>Faça o Quiz da Lista 1</b>: são as questões oficiais do professor (30 min). Leia todas as explicações.</li>
       <li><b>Laboratório</b>: brinque com as simulações de race condition, semáforo e eventos (20 min). Ver funcionando fixa muito mais.</li>
       <li><b>Flashcards</b> para memorizar definições (20 min).</li>
-      <li><b>Discursivas</b>: tente responder em voz alta/no papel antes de revelar a resposta-modelo (30 min).</li>
+      <li><b>Discursivas</b>: tente responder no papel antes de revelar a resposta-modelo (30 min).</li>
       <li><b>Simulado</b> de 20 questões aleatórias. Repita até passar de 80% (30 min).</li>
       <li>Use <b>“Revisar erradas”</b> no Quiz para atacar seus pontos fracos.</li>
     </ol>
   </div>
 
-  <div class="card">
-    <h2>📊 Seu desempenho por tema</h2>
-    <div id="progresso-temas"></div>
-    <button class="btn ghost small" id="btn-reset">Zerar progresso</button>
+  <h2 class="section-title" style="margin-top:2rem">Os 10 conceitos que mais caem</h2>
+  <div class="concepts">
+    <div><b>Concorrência</b> = intercalada · <b>Paralelismo</b> = simultâneo em vários núcleos</div>
+    <div><b>Thread</b> compartilha memória · <b>Processo</b> tem memória isolada (mais pesado)</div>
+    <div><b>async/await</b> não bloqueia a thread enquanto espera I/O</div>
+    <div><code>public async Task X()</code> + <code>await Task.Delay()</code> (nunca Thread.Sleep)</div>
+    <div><b>Task.WhenAll</b> = várias tarefas juntas, aguarda todas</div>
+    <div><b>Mutex/lock</b> = 1 por vez · <b>Semáforo</b> = até N</div>
+    <div><b>Monitor</b>: Enter / Exit (finally) / TryEnter(obj, ms) → bool</div>
+    <div><b>ManualResetEvent</b> libera todas · <b>AutoResetEvent</b> libera uma</div>
+    <div><b>Deadlock</b> = espera circular · <b>Race condition</b> = resultado depende da ordem</div>
+    <div><b>RabbitMQ</b> = filas ordenadas · <b>MQTT</b> = pub/sub IoT · <b>WebSocket</b> = bidirecional</div>
   </div>
 
-  <div class="card">
-    <h2>🧠 Os 10 conceitos que mais caem</h2>
-    <div class="grid2 mini">
-      <div><b>Concorrência</b> = intercalada · <b>Paralelismo</b> = simultâneo em vários núcleos</div>
-      <div><b>Thread</b> compartilha memória · <b>Processo</b> tem memória isolada (mais pesado)</div>
-      <div><b>async/await</b> não bloqueia a thread enquanto espera I/O</div>
-      <div><code>public async Task X()</code> + <code>await Task.Delay()</code> (nunca Thread.Sleep)</div>
-      <div><b>Task.WhenAll</b> = várias tarefas juntas, aguarda todas</div>
-      <div><b>Mutex/lock</b> = 1 por vez · <b>Semáforo</b> = até N</div>
-      <div><b>Monitor</b>: Enter / Exit (finally) / TryEnter(obj, ms) → bool</div>
-      <div><b>ManualResetEvent</b> libera todas · <b>AutoResetEvent</b> libera uma</div>
-      <div><b>Deadlock</b> = espera circular · <b>Race condition</b> = resultado depende da ordem</div>
-      <div><b>RabbitMQ</b> = filas ordenadas · <b>MQTT</b> = pub/sub IoT · <b>WebSocket</b> = bidirecional</div>
-    </div>
+  <div class="grid features-6" style="margin-top:2rem">
+    <button class="card feature" data-go="resumos"><span class="ico">📖</span><b>Resumos</b><span>7 temas com tabelas, código C# e pegadinhas.</span></button>
+    <button class="card feature" data-go="quiz"><span class="ico">🎯</span><b>Quiz</b><span>Lista 1 do professor e questões extras, com explicação.</span></button>
+    <button class="card feature" data-go="simulado"><span class="ico">⏱</span><b>Simulado</b><span>Prova cronometrada com nota e correção.</span></button>
+    <button class="card feature" data-go="flash"><span class="ico">🃏</span><b>Flashcards</b><span>Revisão rápida de definições.</span></button>
+    <button class="card feature" data-go="discursivas"><span class="ico">✍️</span><b>Discursivas</b><span>Questões abertas com resposta-modelo e pontos-chave.</span></button>
+    <button class="card feature" data-go="lab"><span class="ico">🧪</span><b>Laboratório</b><span>Race condition, semáforo, eventos, async e deadlock.</span></button>
   </div>
 </section>
 
-<!-- ============================ RESUMOS ============================ -->
-<section id="view-resumos" class="view">
-  <div class="resumo-layout">
-    <aside class="toc" id="toc">
-      <a href="#r-principios">1. Princípios de SD</a>
-      <a href="#r-threads">2. Threads e Async/Await</a>
-      <a href="#r-comunicacao">3. Comunicação</a>
-      <a href="#r-arquiteturas">4. Arquiteturas e Memória</a>
-      <a href="#r-sincronizacao">5. Semáforos e Mutex</a>
-      <a href="#r-monitor">6. Monitor</a>
-      <a href="#r-eventos">7. Manual/AutoResetEvent</a>
-      <a href="#r-comparativo">⭐ Quadro geral</a>
-    </aside>
+<!-- ======================= RESUMOS ======================= -->
+<section class="view" id="view-resumos">
+  <h2 class="section-title">Resumos por tema</h2>
+  <p class="lead">Toque em um tema para abrir. Blocos de código podem ser rolados para o lado.</p>
+  <nav class="week-index" aria-label="Temas">
+    <a href="#r-principios" data-week="r-principios">Tema 1<small>Princípios de SD</small></a>
+    <a href="#r-threads" data-week="r-threads">Tema 2<small>Threads e async</small></a>
+    <a href="#r-comunicacao" data-week="r-comunicacao">Tema 3<small>Comunicação</small></a>
+    <a href="#r-arquiteturas" data-week="r-arquiteturas">Tema 4<small>Arquiteturas</small></a>
+    <a href="#r-sincronizacao" data-week="r-sincronizacao">Tema 5<small>Semáforo e Mutex</small></a>
+    <a href="#r-monitor" data-week="r-monitor">Tema 6<small>Monitor</small></a>
+    <a href="#r-eventos" data-week="r-eventos">Tema 7<small>Manual/Auto Reset</small></a>
+    <a href="#r-comparativo" data-week="r-comparativo">⭐ Revisão<small>Quadro geral</small></a>
+  </nav>
 
-    <div class="resumo-content">
-
-    <!-- 1 -->
-    <article id="r-principios" class="card resumo">
-      <h2>1. Princípios de Implementação de Sistemas Distribuídos</h2>
+  <details class="card week" id="r-principios">
+    <summary><span class="num">1</span><span class="ttl"><b>Princípios de Sistemas Distribuídos</b><small>Paralela × distribuída, objetivos, CAP, falhas, monólito × microsserviços</small></span></summary>
+    <div class="week-body">
       <p><b>Ideia central:</b> dividir tarefas entre <b>várias máquinas</b> que se comunicam pela rede para resolver problemas maiores de forma <b>eficiente, escalável e tolerante a falhas</b> (bancos, redes sociais, jogos online, nuvem, e-commerce).</p>
       <div class="compare">
         <div><h4>Programação Paralela</h4>Divide tarefas <b>dentro do mesmo computador</b>: multithreading, GPU, multicore.</div>
@@ -96,13 +135,15 @@
       </div>
 
       <h3>Objetivos de um Sistema Distribuído</h3>
-      <table>
-        <tr><th>Objetivo</th><th>O que significa</th></tr>
-        <tr><td><b>Transparência</b></td><td><b>Localização</b> (não preciso saber onde está o recurso) · <b>Replicação</b> (não preciso saber que há cópias) · <b>Acesso</b> (forma uniforme de acessar) · <b>Concorrência</b> (vários usuários sem conflito)</td></tr>
-        <tr><td><b>Escalabilidade</b></td><td>Suportar crescimento de usuários/dados, evitar gargalos centralizados, facilitar manutenção (serviços separados)</td></tr>
-        <tr><td><b>Tolerância a falhas</b></td><td>Se uma máquina cai, o sistema continua. Redundância e recuperação</td></tr>
-        <tr><td><b>Desempenho</b></td><td><b>Baixa latência</b> (resposta rápida) e <b>alto throughput</b> (muitas requisições/segundo)</td></tr>
-      </table>
+      <div class="table-wrap"><table class="stack">
+        <thead><tr><th>Objetivo</th><th>O que significa</th></tr></thead>
+        <tbody>
+          <tr><td><b>Transparência</b></td><td><b>Localização</b> (não preciso saber onde está o recurso) · <b>Replicação</b> (não preciso saber que há cópias) · <b>Acesso</b> (forma uniforme de acessar) · <b>Concorrência</b> (vários usuários sem conflito)</td></tr>
+          <tr><td><b>Escalabilidade</b></td><td>Suportar crescimento de usuários/dados, evitar gargalos centralizados, facilitar manutenção (serviços separados)</td></tr>
+          <tr><td><b>Tolerância a falhas</b></td><td>Se uma máquina cai, o sistema continua. Redundância e recuperação</td></tr>
+          <tr><td><b>Desempenho</b></td><td><b>Baixa latência</b> (resposta rápida) e <b>alto throughput</b> (muitas requisições/segundo)</td></tr>
+        </tbody>
+      </table></div>
 
       <h3>Princípios fundamentais de implementação</h3>
       <ul>
@@ -114,16 +155,18 @@
       </ul>
 
       <h3>Exemplos práticos e tecnologias</h3>
-      <table>
-        <tr><th>Categoria</th><th>Exemplos</th></tr>
-        <tr><td>Big data</td><td>MapReduce / Hadoop, Spark</td></tr>
-        <tr><td>Arquivos distribuídos</td><td>Google File System, HDFS</td></tr>
-        <tr><td>Bancos distribuídos</td><td>Cassandra, MongoDB, CockroachDB</td></tr>
-        <tr><td>Comunicação</td><td>gRPC, RabbitMQ, Kafka, REST APIs</td></tr>
-        <tr><td>Frameworks</td><td>Hadoop, Spark, Akka, MPI</td></tr>
-        <tr><td>Orquestração</td><td>Kubernetes, Docker Swarm</td></tr>
-        <tr><td>Tolerância a falhas / coordenação</td><td>ZooKeeper, Consul, etcd</td></tr>
-      </table>
+      <div class="table-wrap"><table class="stack">
+        <thead><tr><th>Categoria</th><th>Exemplos</th></tr></thead>
+        <tbody>
+          <tr><td>Big data</td><td>MapReduce / Hadoop, Spark</td></tr>
+          <tr><td>Arquivos distribuídos</td><td>Google File System, HDFS</td></tr>
+          <tr><td>Bancos distribuídos</td><td>Cassandra, MongoDB, CockroachDB</td></tr>
+          <tr><td>Comunicação</td><td>gRPC, RabbitMQ, Kafka, REST APIs</td></tr>
+          <tr><td>Frameworks</td><td>Hadoop, Spark, Akka, MPI</td></tr>
+          <tr><td>Orquestração</td><td>Kubernetes, Docker Swarm</td></tr>
+          <tr><td>Tolerância a falhas / coordenação</td><td>ZooKeeper, Consul, etcd</td></tr>
+        </tbody>
+      </table></div>
 
       <h3>Do monólito aos microsserviços</h3>
       <div class="compare">
@@ -146,18 +189,19 @@
       </div>
       <p><b>Comunicação:</b> síncrona via REST/gRPC; assíncrona via fila (Pedidos publica evento → Pagamentos consome).<br>
       <b>Benefícios:</b> escalabilidade (só mais instâncias de Pedidos), independência tecnológica, <b>resiliência</b> (Pagamentos cai, o resto funciona), evolução mais rápida.</p>
-      <div class="pegadinha">⚠️ <b>Pegadinha:</b> “serviços separados que se comunicam pela rede” = <b>distribuída</b>, não “paralela”.</div>
-      <button class="btn practice" data-tema="principios">Praticar este tema →</button>
-    </article>
+      <div class="callout warn"><span class="ct">⚠️ Pegadinha</span>“serviços separados que se comunicam pela rede” = <b>distribuída</b>, não “paralela”.</div>
+      <div class="week-foot"><button class="btn btn-primary practice" data-tema="principios">🎯 Praticar este tema</button></div>
+    </div>
+  </details>
 
-    <!-- 2 -->
-    <article id="r-threads" class="card resumo">
-      <h2>2. Threads na prática: Concorrência, Paralelismo e Async/Await</h2>
+  <details class="card week" id="r-threads">
+    <summary><span class="num">2</span><span class="ttl"><b>Threads, Concorrência e Async/Await</b><small>Concorrência × paralelismo, thread bloqueada, Task, await, WhenAll</small></span></summary>
+    <div class="week-body">
       <div class="compare">
         <div><h4>Concorrência</h4>Lidar com várias tarefas <b>“ao mesmo tempo”, mas não necessariamente no mesmo instante</b>. As tarefas são <b>intercaladas</b> (o processador alterna). Ideal quando há <b>esperas</b>: disco, rede, usuário.</div>
         <div><h4>Paralelismo</h4>Execução de várias tarefas <b>no mesmo instante</b> em <b>núcleos/processadores diferentes</b>. Requer multicore. Ideal para tarefas <b>pesadas de CPU</b>: cálculos, renderização.</div>
       </div>
-      <div class="pegadinha">⚠️ “Execução simultânea em múltiplos núcleos” = <b>paralelismo</b>. “Execução intercalada em uma ou mais threads” = <b>concorrência</b>.</div>
+      <div class="callout warn">⚠️ “Execução simultânea em múltiplos núcleos” = <b>paralelismo</b>. “Execução intercalada em uma ou mais threads” = <b>concorrência</b>.</div>
 
       <h3>Thread × Processo</h3>
       <p><b>Thread:</b> menor unidade de execução dentro de um processo; <b>compartilha memória e recursos</b> com as outras threads.<br>
@@ -205,21 +249,24 @@ await Task.WhenAll(t1, t2, t3);   // tempo ≈ a mais lenta
         <li><b>Banco de dados</b> – EF / Dapper com await: app não trava esperando o banco.</li>
         <li><b>PIX</b> – várias transações simultâneas; o sistema continua operando enquanto aguarda as APIs externas.</li>
       </ol>
-      <div class="pegadinha">⚠️ Async <b>não</b> torna a operação mais rápida e <b>não</b> elimina threads. A vantagem é <b>não bloquear a thread durante a espera</b>.<br>⚠️ <code>async void</code> só para event handlers. <code>Task.Sleep</code> não existe. <code>await Thread.Sleep</code> não compila.</div>
-      <button class="btn practice" data-tema="threads">Praticar este tema →</button>
-    </article>
+      <div class="callout warn">⚠️ Async <b>não</b> torna a operação mais rápida e <b>não</b> elimina threads. A vantagem é <b>não bloquear a thread durante a espera</b>.<br>⚠️ <code>async void</code> só para event handlers. <code>Task.Sleep</code> não existe. <code>await Thread.Sleep</code> não compila.</div>
+      <div class="week-foot"><button class="btn btn-primary practice" data-tema="threads">🎯 Praticar este tema</button><button class="btn" data-go="lab" data-lab="async">⏱ Ver async no laboratório</button></div>
+    </div>
+  </details>
 
-    <!-- 3 -->
-    <article id="r-comunicacao" class="card resumo">
-      <h2>3. Comunicação entre Sistemas Distribuídos</h2>
+  <details class="card week" id="r-comunicacao">
+    <summary><span class="num">3</span><span class="ttl"><b>Comunicação entre Sistemas</b><small>RPC, pub/sub, MQTT, TCP/UDP, embarcados, WebSocket, Flask, JSON</small></span></summary>
+    <div class="week-body">
       <h3>Modelos de comunicação</h3>
-      <table>
-        <tr><th>Modelo</th><th>Como funciona</th><th>Exemplos</th></tr>
-        <tr><td><b>Troca de mensagens</b></td><td>send/receive explícito; síncrona (bloqueia) ou assíncrona. Base de quase tudo</td><td>MPI, RabbitMQ</td></tr>
-        <tr><td><b>RPC</b></td><td>Chama função em outro nó <b>como se fosse local</b>. Abstrai a rede, mas esconde latência e falhas</td><td>Java RMI, gRPC, WCF</td></tr>
-        <tr><td><b>Objetos remotos</b></td><td>RPC orientado a objetos: chama métodos de objetos remotos</td><td>RMI, CORBA</td></tr>
-        <tr><td><b>Pub/Sub</b></td><td>Produtor publica em <b>tópico</b>; assinantes recebem. Baseado em eventos, <b>desacoplado</b>, escalável</td><td>Kafka, MQTT, Redis Pub/Sub</td></tr>
-      </table>
+      <div class="table-wrap"><table class="stack">
+        <thead><tr><th>Modelo</th><th>Como funciona</th><th>Exemplos</th></tr></thead>
+        <tbody>
+          <tr><td><b>Troca de mensagens</b></td><td>send/receive explícito; síncrona (bloqueia) ou assíncrona. Base de quase tudo</td><td>MPI, RabbitMQ</td></tr>
+          <tr><td><b>RPC</b></td><td>Chama função em outro nó <b>como se fosse local</b>. Abstrai a rede, mas esconde latência e falhas</td><td>Java RMI, gRPC, WCF</td></tr>
+          <tr><td><b>Objetos remotos</b></td><td>RPC orientado a objetos: chama métodos de objetos remotos</td><td>RMI, CORBA</td></tr>
+          <tr><td><b>Pub/Sub</b></td><td>Produtor publica em <b>tópico</b>; assinantes recebem. Baseado em eventos, <b>desacoplado</b>, escalável</td><td>Kafka, MQTT, Redis Pub/Sub</td></tr>
+        </tbody>
+      </table></div>
 
       <h3>MQTT (Message Queuing Telemetry Transport)</h3>
       <p>Protocolo <b>leve</b>, pub/sub, sobre TCP/IP, para dispositivos limitados e redes instáveis (IoT).
@@ -249,35 +296,39 @@ await Task.WhenAll(t1, t2, t3);   // tempo ≈ a mais lenta
 
       <h3>Comunicação em sistemas embarcados</h3>
       <p>Recursos limitados → comunicação deve ser <b>eficiente</b> (baixo overhead), <b>confiável</b> e <b>determinística</b> (tempo real).</p>
-      <table>
-        <tr><th>Tipo</th><th>Características</th></tr>
-        <tr><td><b>UART</b> (RS-232/RS-485)</td><td>Serial ponto a ponto, simples; RS-485 multiponto; até alguns Mbps</td></tr>
-        <tr><td><b>SPI</b></td><td>Mestre–escravo, <b>muito rápida</b>, curto alcance (mesma placa)</td></tr>
-        <tr><td><b>I²C</b></td><td>Mestre–escravo, mais lenta que SPI, vários dispositivos em <b>2 fios (SDA, SCL)</b></td></tr>
-        <tr><td><b>CAN</b></td><td>Automotivo/industrial, <b>multi-master</b>, robusto a ruído, prioriza mensagens</td></tr>
-        <tr><td><b>Ethernet</b></td><td>Embarcados avançados, EtherCAT, Profinet, integra com IP</td></tr>
-        <tr><td><b>Modbus</b></td><td>Industrial clássico, RS-485 ou TCP/IP, CLPs e automação predial</td></tr>
-        <tr><td><b>Bluetooth/BLE</b></td><td>Curto alcance; BLE = baixo consumo</td></tr>
-        <tr><td><b>Wi-Fi</b></td><td>Integra direto com IP, consumo maior</td></tr>
-        <tr><td><b>LoRa/ZigBee/Z-Wave</b></td><td>Baixa potência e <b>longo alcance</b>, sensores remotos</td></tr>
-        <tr><td><b>Celular/NB-IoT</b></td><td>Cobertura ampla, mais caro e maior consumo</td></tr>
-        <tr><td><b>MQTT</b></td><td>Leve, TCP/IP, pub/sub</td></tr>
-        <tr><td><b>CoAP</b></td><td>Tipo HTTP para dispositivos limitados, sobre <b>UDP</b></td></tr>
-        <tr><td><b>OPC-UA</b></td><td>Automação industrial: interoperabilidade e padronização</td></tr>
-      </table>
+      <div class="table-wrap"><table class="stack">
+        <thead><tr><th>Tipo</th><th>Características</th></tr></thead>
+        <tbody>
+          <tr><td><b>UART</b> (RS-232/RS-485)</td><td>Serial ponto a ponto, simples; RS-485 multiponto; até alguns Mbps</td></tr>
+          <tr><td><b>SPI</b></td><td>Mestre–escravo, <b>muito rápida</b>, curto alcance (mesma placa)</td></tr>
+          <tr><td><b>I²C</b></td><td>Mestre–escravo, mais lenta que SPI, vários dispositivos em <b>2 fios (SDA, SCL)</b></td></tr>
+          <tr><td><b>CAN</b></td><td>Automotivo/industrial, <b>multi-master</b>, robusto a ruído, prioriza mensagens</td></tr>
+          <tr><td><b>Ethernet</b></td><td>Embarcados avançados, EtherCAT, Profinet, integra com IP</td></tr>
+          <tr><td><b>Modbus</b></td><td>Industrial clássico, RS-485 ou TCP/IP, CLPs e automação predial</td></tr>
+          <tr><td><b>Bluetooth/BLE</b></td><td>Curto alcance; BLE = baixo consumo</td></tr>
+          <tr><td><b>Wi-Fi</b></td><td>Integra direto com IP, consumo maior</td></tr>
+          <tr><td><b>LoRa/ZigBee/Z-Wave</b></td><td>Baixa potência e <b>longo alcance</b>, sensores remotos</td></tr>
+          <tr><td><b>Celular/NB-IoT</b></td><td>Cobertura ampla, mais caro e maior consumo</td></tr>
+          <tr><td><b>MQTT</b></td><td>Leve, TCP/IP, pub/sub</td></tr>
+          <tr><td><b>CoAP</b></td><td>Tipo HTTP para dispositivos limitados, sobre <b>UDP</b></td></tr>
+          <tr><td><b>OPC-UA</b></td><td>Automação industrial: interoperabilidade e padronização</td></tr>
+        </tbody>
+      </table></div>
       <p><b>Desafios:</b> baixo consumo de energia · ruído · pouca CPU · tempo real (entregar no prazo).<br>
       <b>Raspberry Pi</b> = ponte: roda Linux, tem rede e GPIO (I²C, SPI, UART). Papéis: <b>mestre I²C</b>, <b>servidor</b> (Flask/MQTT broker), <b>gateway IoT</b> (Arduinos → RPi → nuvem).</p>
 
       <h3>WebSocket</h3>
       <p>Conexão <b>contínua, persistente e bidirecional</b>. Usa TCP; HTTP só no <b>handshake</b> (<code>Upgrade: websocket</code>, <code>Connection: Upgrade</code>). URLs <code>ws://</code> e <code>wss://</code> (TLS). Eventos: <code>onopen, onmessage, onclose, onerror</code>. Usos: chat, dashboards IoT, jogos, colaboração, notificações.</p>
-      <table>
-        <tr><th>Característica</th><th>WebSocket</th><th>HTTP / API REST</th></tr>
-        <tr><td>Comunicação</td><td>Bidirecional e contínua</td><td>Requisição-resposta</td></tr>
-        <tr><td>Persistência</td><td>Conexão aberta</td><td>Fecha após a resposta</td></tr>
-        <tr><td>Tempo de resposta</td><td>Imediato</td><td>Depende da requisição</td></tr>
-        <tr><td>Ideal para</td><td>Tempo real (chat, sensores)</td><td>Consultas pontuais (dados, login)</td></tr>
-        <tr><td>Segurança</td><td>wss:// (TLS/SSL)</td><td>https:// (TLS/SSL)</td></tr>
-      </table>
+      <div class="table-wrap"><table class="stack">
+        <thead><tr><th>Característica</th><th>WebSocket</th><th>HTTP / API REST</th></tr></thead>
+        <tbody>
+          <tr><td>Comunicação</td><td>Bidirecional e contínua</td><td>Requisição-resposta</td></tr>
+          <tr><td>Persistência</td><td>Conexão aberta</td><td>Fecha após a resposta</td></tr>
+          <tr><td>Tempo de resposta</td><td>Imediato</td><td>Depende da requisição</td></tr>
+          <tr><td>Ideal para</td><td>Tempo real (chat, sensores)</td><td>Consultas pontuais (dados, login)</td></tr>
+          <tr><td>Segurança</td><td>wss:// (TLS/SSL)</td><td>https:// (TLS/SSL)</td></tr>
+        </tbody>
+      </table></div>
 
       <h3>APIs e Flask</h3>
       <p><b>API</b> = conjunto de regras e protocolos para sistemas se comunicarem, acessando funcionalidades <b>sem conhecer a implementação interna</b>.
@@ -292,22 +343,25 @@ def temperatura():
     return jsonify({"estacao": "ST1", "valor": 25.3})</code></pre>
       <h3>JSON × XML</h3>
       <p>São <b>formatos de dados</b> (não protocolos). JSON: leve, legível, compatível com tudo, padrão REST → <b>maior generalização e baixo custo</b>. XML: mais verboso, usado em SOAP.</p>
-      <div class="pegadinha">⚠️ <b>Questão do JSON (Lista Q17):</b> <code>ST1 | 20250831 | 002-045-001</code> → ordem estacao, data, silo e o silo é <b>composto</b> → array:<br><code>{"estacao": "ST1", "data": "20250831", "silo": ["002", "045", "001"]}</code></div>
-      <button class="btn practice" data-tema="comunicacao">Praticar este tema →</button>
-    </article>
+      <div class="callout warn">⚠️ <b>Questão do JSON (Lista Q17):</b> <code>ST1 | 20250831 | 002-045-001</code> → ordem estacao, data, silo e o silo é <b>composto</b> → array:<br><code>{"estacao": "ST1", "data": "20250831", "silo": ["002", "045", "001"]}</code></div>
+      <div class="week-foot"><button class="btn btn-primary practice" data-tema="comunicacao">🎯 Praticar este tema</button></div>
+    </div>
+  </details>
 
-    <!-- 4 -->
-    <article id="r-arquiteturas" class="card resumo">
-      <h2>4. Arquiteturas, Middleware e Memória (complemento da Lista)</h2>
-      <table>
-        <tr><th>Arquitetura</th><th>Ideia</th></tr>
-        <tr><td><b>Monolítica</b></td><td>Tudo em uma aplicação/servidor</td></tr>
-        <tr><td><b>Cliente-servidor</b></td><td>Servidores dedicados processam as requisições dos clientes</td></tr>
-        <tr><td><b>Peer-to-peer</b></td><td>Os próprios participantes dividem a execução, sem servidor central</td></tr>
-        <tr><td><b>SOA</b></td><td>Funcionalidades como <b>serviços reutilizáveis e interoperáveis</b>; flexibilidade e integração de sistemas heterogêneos</td></tr>
-        <tr><td><b>Microsserviços</b></td><td>Serviços pequenos e independentes, cada um com seu banco; <b>threads por serviço</b></td></tr>
-        <tr><td><b>Serverless</b></td><td>Funções em provedores de nuvem (AWS/Azure/GCP), <b>sem gerenciar servidores</b>, escala automática; threads “invisíveis”</td></tr>
-      </table>
+  <details class="card week" id="r-arquiteturas">
+    <summary><span class="num">4</span><span class="ttl"><b>Arquiteturas, Middleware e Memória</b><small>Monólito a serverless, middleware × API, deadlock, memory leak</small></span></summary>
+    <div class="week-body">
+      <div class="table-wrap"><table class="stack">
+        <thead><tr><th>Arquitetura</th><th>Ideia</th></tr></thead>
+        <tbody>
+          <tr><td><b>Monolítica</b></td><td>Tudo em uma aplicação/servidor</td></tr>
+          <tr><td><b>Cliente-servidor</b></td><td>Servidores dedicados processam as requisições dos clientes</td></tr>
+          <tr><td><b>Peer-to-peer</b></td><td>Os próprios participantes dividem a execução, sem servidor central</td></tr>
+          <tr><td><b>SOA</b></td><td>Funcionalidades como <b>serviços reutilizáveis e interoperáveis</b>; flexibilidade e integração de sistemas heterogêneos</td></tr>
+          <tr><td><b>Microsserviços</b></td><td>Serviços pequenos e independentes, cada um com seu banco; <b>threads por serviço</b></td></tr>
+          <tr><td><b>Serverless</b></td><td>Funções em provedores de nuvem (AWS/Azure/GCP), <b>sem gerenciar servidores</b>, escala automática; threads “invisíveis”</td></tr>
+        </tbody>
+      </table></div>
       <div class="compare">
         <div><h4>Middleware</h4>Camada <b>intermediária</b> que facilita a comunicação, <b>abstrai protocolos</b> e oferece serviços (autenticação, mensageria, transações).</div>
         <div><h4>API</h4>O <b>contrato</b>: conjunto de regras e interfaces para acessar funcionalidades de um software.</div>
@@ -320,12 +374,13 @@ def temperatura():
         <li><b>Garbage Collector</b> (C#, Java): gerencia memória automaticamente, evitando vazamentos em ambientes multithread.</li>
         <li><b>Alto desempenho:</b> minimizar latência entre nós e otimizar recursos, evitando gargalos.</li>
       </ul>
-      <button class="btn practice" data-tema="arquiteturas">Praticar este tema →</button>
-    </article>
+      <div class="week-foot"><button class="btn btn-primary practice" data-tema="arquiteturas">🎯 Praticar este tema</button><button class="btn" data-go="lab" data-lab="deadlock">💀 Ver deadlock no laboratório</button></div>
+    </div>
+  </details>
 
-    <!-- 5 -->
-    <article id="r-sincronizacao" class="card resumo">
-      <h2>5. Semáforos e Mutexes</h2>
+  <details class="card week" id="r-sincronizacao">
+    <summary><span class="num">5</span><span class="ttl"><b>Semáforos e Mutexes</b><small>Região crítica, mutex × semáforo, armadilhas, lock em C#</small></span></summary>
+    <div class="week-body">
       <p>Várias threads + recursos compartilhados (memória, arquivos, dispositivos) <b>sem sincronização</b> = <b>race conditions</b>, dados corrompidos, comportamento indefinido.</p>
       <ul>
         <li><b>Concorrência:</b> várias unidades de execução progredindo ao mesmo tempo.</li>
@@ -368,21 +423,24 @@ public void Sacar(decimal valor)
 }</code></pre>
       <p><b>Como o lock funciona:</b> (1) objeto de bloqueio privado; (2) quem entra adquire acesso exclusivo, os outros esperam; (3) liberação automática mesmo com exceção; (4) atualizações ficam sequenciais e seguras. A thread que já tem o lock pode readquiri-lo (reentrante).</p>
       <p><b>Semaphore/SemaphoreSlim:</b> se a contagem é <b>zero</b>, a thread <b>bloqueia</b>; quando alguém chama <code>Release()</code>, uma bloqueada entra.</p>
-      <button class="btn practice" data-tema="sincronizacao">Praticar este tema →</button>
-    </article>
+      <div class="week-foot"><button class="btn btn-primary practice" data-tema="sincronizacao">🎯 Praticar este tema</button><button class="btn" data-go="lab" data-lab="semaforo">🚦 Ver semáforo no laboratório</button></div>
+    </div>
+  </details>
 
-    <!-- 6 -->
-    <article id="r-monitor" class="card resumo">
-      <h2>6. Monitor – Enter | Exit | TryEnter</h2>
+  <details class="card week" id="r-monitor">
+    <summary><span class="num">6</span><span class="ttl"><b>Monitor: Enter, Exit e TryEnter</b><small>Race condition, TryEnter com timeout, lock × Monitor × Semaphore × Mutex</small></span></summary>
+    <div class="week-body">
       <p>Classe de <code>System.Threading</code> que permite que <b>apenas uma thread por vez</b> execute uma seção crítica, <b>quando todas usam o mesmo objeto de bloqueio</b>. Analogia: <b>uma chave</b> – uma pessoa entra, altera o estoque e devolve a chave.</p>
-      <p><b>Problema que resolve:</b> <b>race condition</b>. Estoque = 10, duas threads vendem 7 ao mesmo tempo: ambas leem 10 antes de atualizar → vendem 14 itens. Com Monitor, a 2ª só lê depois da 1ª terminar (vê 3 e recusa). <a href="#" class="golab" data-lab="race">Ver no laboratório →</a></p>
+      <p><b>Problema que resolve:</b> <b>race condition</b>. Estoque = 10, duas threads vendem 7 ao mesmo tempo: ambas leem 10 antes de atualizar → vendem 14 itens. Com Monitor, a 2ª só lê depois da 1ª terminar (vê 3 e recusa). <a href="#lab" data-go="lab" data-lab="race">Ver no laboratório →</a></p>
       <p><b>Onde usar:</b> estoque, contas bancárias, sistemas de pedidos, filas/listas compartilhadas, qualquer objeto acessado por várias threads.</p>
-      <table>
-        <tr><th>Método</th><th>Responsabilidade</th></tr>
-        <tr><td><code>Monitor.Enter(bloqueio)</code></td><td>Adquire o bloqueio; se outra thread tem, <b>espera</b></td></tr>
-        <tr><td><code>Monitor.Exit(bloqueio)</code></td><td><b>Libera</b> o bloqueio da thread atual</td></tr>
-        <tr><td><code>bool ok = Monitor.TryEnter(bloqueio, 100)</code></td><td><b>Tenta</b> adquirir por até 100 ms; retorna <b>bool</b></td></tr>
-      </table>
+      <div class="table-wrap"><table class="stack">
+        <thead><tr><th>Método</th><th>Responsabilidade</th></tr></thead>
+        <tbody>
+          <tr><td><code>Monitor.Enter(bloqueio)</code></td><td>Adquire o bloqueio; se outra thread tem, <b>espera</b></td></tr>
+          <tr><td><code>Monitor.Exit(bloqueio)</code></td><td><b>Libera</b> o bloqueio da thread atual</td></tr>
+          <tr><td><code>bool ok = Monitor.TryEnter(bloqueio, 100)</code></td><td><b>Tenta</b> adquirir por até 100 ms; retorna <b>bool</b></td></tr>
+        </tbody>
+      </table></div>
 <pre><code>if (Monitor.TryEnter(_bloqueio, 100))
 {
     try   { /* região protegida */ }
@@ -393,14 +451,16 @@ else
     // não conseguiu em 100 ms → segue outro caminho
 }</code></pre>
       <h3>Quadro comparativo</h3>
-      <table>
-        <tr><th>Recurso</th><th>Acessos simultâneos</th><th>Entre processos?</th><th>Característica</th></tr>
-        <tr><td><b>lock</b></td><td>1</td><td>Não</td><td>Forma simples e segura; padrão para seções críticas curtas</td></tr>
-        <tr><td><b>Monitor</b></td><td>1 por objeto</td><td>Não</td><td>Controle detalhado: TryEnter, timeout, Wait/Pulse/PulseAll</td></tr>
-        <tr><td><b>Semaphore</b></td><td>Até N</td><td>Sim (nomeado)</td><td>Limita quantas threads acessam</td></tr>
-        <tr><td><b>SemaphoreSlim</b></td><td>Até N</td><td>Não</td><td>Leve, suporta <code>await WaitAsync()</code></td></tr>
-        <tr><td><b>Mutex</b></td><td>1 por Mutex</td><td>Sim (nomeado)</td><td>Bloqueio exclusivo compartilhável entre processos</td></tr>
-      </table>
+      <div class="table-wrap"><table class="stack">
+        <thead><tr><th>Recurso</th><th>Acessos simultâneos</th><th>Entre processos?</th><th>Característica</th></tr></thead>
+        <tbody>
+          <tr><td><b>lock</b></td><td>1</td><td>Não</td><td>Forma simples e segura; padrão para seções críticas curtas</td></tr>
+          <tr><td><b>Monitor</b></td><td>1 por objeto</td><td>Não</td><td>Controle detalhado: TryEnter, timeout, Wait/Pulse/PulseAll</td></tr>
+          <tr><td><b>Semaphore</b></td><td>Até N</td><td>Sim (nomeado)</td><td>Limita quantas threads acessam</td></tr>
+          <tr><td><b>SemaphoreSlim</b></td><td>Até N</td><td>Não</td><td>Leve, suporta <code>await WaitAsync()</code></td></tr>
+          <tr><td><b>Mutex</b></td><td>1 por Mutex</td><td>Sim (nomeado)</td><td>Bloqueio exclusivo compartilhável entre processos</td></tr>
+        </tbody>
+      </table></div>
 <pre><code>// Semaphore: até 3 simultâneos
 using var semaforo = new Semaphore(3, 3);
 semaforo.WaitOne();  try { /* ... */ } finally { semaforo.Release(); }
@@ -420,12 +480,13 @@ mutex.WaitOne();  try { /* ... */ } finally { mutex.ReleaseMutex(); }</code></pr
         <li><b>SemaphoreSlim(3)</b>: no máximo 3 operações <b>assíncronas</b> com WaitAsync.</li>
         <li><b>Mutex</b> nomeado: impede duas <b>instâncias do programa</b> de executarem a mesma tarefa.</li>
       </ul>
-      <button class="btn practice" data-tema="monitor">Praticar este tema →</button>
-    </article>
+      <div class="week-foot"><button class="btn btn-primary practice" data-tema="monitor">🎯 Praticar este tema</button><button class="btn" data-go="lab" data-lab="race">🏁 Ver race condition no laboratório</button></div>
+    </div>
+  </details>
 
-    <!-- 7 -->
-    <article id="r-eventos" class="card resumo">
-      <h2>7. ManualResetEvent | AutoResetEvent</h2>
+  <details class="card week" id="r-eventos">
+    <summary><span class="num">7</span><span class="ttl"><b>ManualResetEvent e AutoResetEvent</b><small>Sinalização: portão × catraca, WaitOne, Set e Reset</small></span></summary>
+    <div class="week-body">
       <p><b>Problema:</b> como uma thread <b>avisa</b> outra? Thread A (produtora) inicializa algo; Thread B (consumidora) não pode seguir antes. Como bloquear B <b>sem ficar consultando uma variável em loop</b>? → <b>mecanismo de sinalização</b>.</p>
       <ul>
         <li>Dois estados: <b>sinalizado</b> (signaled) e <b>não sinalizado</b> (non-signaled).</li>
@@ -453,142 +514,156 @@ using var sinal = new AutoResetEvent(false);
 var consumidor = Task.Run(() => { sinal.WaitOne(); Console.WriteLine("Recebi o sinal"); });
 sinal.Set();                                         // libera UM e fecha sozinho
 await consumidor;</code></pre>
-      <table>
-        <tr><th>Aspecto</th><th>ManualResetEvent</th><th>AutoResetEvent</th></tr>
-        <tr><td>Quem é liberado?</td><td>Todas as threads aguardando</td><td>Uma thread</td></tr>
-        <tr><td>Depois de Set()</td><td>Continua sinalizado</td><td>Volta a não sinalizado</td></tr>
-        <tr><td>Reset() manual</td><td>Necessário para bloquear de novo</td><td>Não é necessário</td></tr>
-        <tr><td>Uso típico</td><td>Avisar que a inicialização terminou</td><td>Entregar um sinal/trabalho a um consumidor</td></tr>
-        <tr><td>Risco</td><td>Esquecer Reset()</td><td>Contar sinais errado</td></tr>
-      </table>
+      <div class="table-wrap"><table class="stack">
+        <thead><tr><th>Aspecto</th><th>ManualResetEvent</th><th>AutoResetEvent</th></tr></thead>
+        <tbody>
+          <tr><td>Quem é liberado?</td><td>Todas as threads aguardando</td><td>Uma thread</td></tr>
+          <tr><td>Depois de Set()</td><td>Continua sinalizado</td><td>Volta a não sinalizado</td></tr>
+          <tr><td>Reset() manual</td><td>Necessário para bloquear de novo</td><td>Não é necessário</td></tr>
+          <tr><td>Uso típico</td><td>Avisar que a inicialização terminou</td><td>Entregar um sinal/trabalho a um consumidor</td></tr>
+          <tr><td>Risco</td><td>Esquecer Reset()</td><td>Contar sinais errado</td></tr>
+        </tbody>
+      </table></div>
       <p><b>Aplicações:</b> inicialização de serviço · testes concorrentes (largada simultânea) · produtor/consumidor · encerramento coordenado · pausar/retomar workers · aguardar recurso pronto.</p>
       <p><b>Como escolher?</b> “Quantas threads devem avançar quando o sinal chegar?” <b>Várias → Manual</b>. <b>Uma por sinal → Auto</b>.</p>
-      <div class="pegadinha">💡 Regra prática: não bloqueie uma thread à toa quando pode <b>aguardar uma Task</b> assincronamente. Para filas reais, <code>Channel&lt;T&gt;</code> é melhor. Eventos <b>sinalizam</b>; para <b>proteger dados</b> use exclusão mútua (lock/Mutex).</div>
-      <a href="#" class="golab btn ghost" data-lab="eventos">Ver no laboratório →</a>
-      <button class="btn practice" data-tema="eventos">Praticar este tema →</button>
-    </article>
-
-    <article id="r-comparativo" class="card resumo">
-      <h2>⭐ Quadro geral: qual primitiva usar?</h2>
-      <table>
-        <tr><th>Preciso de...</th><th>Use</th></tr>
-        <tr><td>Proteger uma variável/objeto (1 por vez), código síncrono</td><td><b>lock</b></td></tr>
-        <tr><td>1 por vez, mas com tempo limite / desistir se ocupado</td><td><b>Monitor.TryEnter</b></td></tr>
-        <tr><td>Exclusividade entre <b>processos/instâncias</b></td><td><b>Mutex nomeado</b></td></tr>
-        <tr><td>Até N simultâneos (pool, conexões)</td><td><b>Semaphore</b> / <b>SemaphoreSlim</b></td></tr>
-        <tr><td>Até N simultâneos com <b>async/await</b></td><td><b>SemaphoreSlim + WaitAsync</b></td></tr>
-        <tr><td>Avisar <b>todas</b> as threads que algo ficou pronto</td><td><b>ManualResetEvent</b></td></tr>
-        <tr><td>Liberar <b>uma</b> thread por sinal</td><td><b>AutoResetEvent</b></td></tr>
-        <tr><td>Várias tarefas assíncronas e aguardar todas</td><td><b>Task.WhenAll</b></td></tr>
-        <tr><td>Esperar sem bloquear</td><td><b>await Task.Delay</b> (nunca Thread.Sleep em async)</td></tr>
-        <tr><td>Mensagens ordenadas e garantidas entre serviços</td><td><b>RabbitMQ</b></td></tr>
-        <tr><td>Telemetria IoT leve</td><td><b>MQTT</b></td></tr>
-        <tr><td>Tempo real bidirecional (chat/dashboard)</td><td><b>WebSocket</b></td></tr>
-      </table>
-    </article>
+      <div class="callout info">💡 Regra prática: não bloqueie uma thread à toa quando pode <b>aguardar uma Task</b> assincronamente. Para filas reais, <code>Channel&lt;T&gt;</code> é melhor. Eventos <b>sinalizam</b>; para <b>proteger dados</b> use exclusão mútua (lock/Mutex).</div>
+      <div class="week-foot"><button class="btn btn-primary practice" data-tema="eventos">🎯 Praticar este tema</button><button class="btn" data-go="lab" data-lab="eventos">🚪 Ver eventos no laboratório</button></div>
     </div>
-  </div>
+  </details>
+
+  <details class="card week" id="r-comparativo">
+    <summary><span class="num">⭐</span><span class="ttl"><b>Quadro geral: qual primitiva usar?</b><small>Tabela de decisão para revisar antes da prova</small></span></summary>
+    <div class="week-body">
+      <div class="table-wrap"><table class="stack">
+        <thead><tr><th>Preciso de...</th><th>Use</th></tr></thead>
+        <tbody>
+          <tr><td>Proteger uma variável/objeto (1 por vez), código síncrono</td><td><b>lock</b></td></tr>
+          <tr><td>1 por vez, mas com tempo limite / desistir se ocupado</td><td><b>Monitor.TryEnter</b></td></tr>
+          <tr><td>Exclusividade entre <b>processos/instâncias</b></td><td><b>Mutex nomeado</b></td></tr>
+          <tr><td>Até N simultâneos (pool, conexões)</td><td><b>Semaphore</b> / <b>SemaphoreSlim</b></td></tr>
+          <tr><td>Até N simultâneos com <b>async/await</b></td><td><b>SemaphoreSlim + WaitAsync</b></td></tr>
+          <tr><td>Avisar <b>todas</b> as threads que algo ficou pronto</td><td><b>ManualResetEvent</b></td></tr>
+          <tr><td>Liberar <b>uma</b> thread por sinal</td><td><b>AutoResetEvent</b></td></tr>
+          <tr><td>Várias tarefas assíncronas e aguardar todas</td><td><b>Task.WhenAll</b></td></tr>
+          <tr><td>Esperar sem bloquear</td><td><b>await Task.Delay</b> (nunca Thread.Sleep em async)</td></tr>
+          <tr><td>Mensagens ordenadas e garantidas entre serviços</td><td><b>RabbitMQ</b></td></tr>
+          <tr><td>Telemetria IoT leve</td><td><b>MQTT</b></td></tr>
+          <tr><td>Tempo real bidirecional (chat/dashboard)</td><td><b>WebSocket</b></td></tr>
+        </tbody>
+      </table></div>
+      <div class="week-foot"><button class="btn btn-primary" data-go="simulado">⏱ Fazer simulado</button><button class="btn" data-go="flash">🃏 Flashcards</button></div>
+    </div>
+  </details>
+
 </section>
 
-<!-- ============================ QUIZ ============================ -->
-<section id="view-quiz" class="view">
-  <div class="card" id="quiz-setup">
-    <h2>❓ Quiz com correção imediata</h2>
-    <p>Escolha um conjunto de questões. Você vê a resposta e a explicação na hora.</p>
-    <div class="quiz-options" id="quiz-options"></div>
+<!-- ======================= QUIZ ======================= -->
+<section class="view" id="view-quiz">
+  <h2 class="section-title">Quiz</h2>
+  <div id="quiz-setup">
+    <p class="lead">Escolha um conjunto. A resposta e a explicação aparecem assim que você marca. A Lista 1 vem na ordem original; os demais conjuntos têm alternativas embaralhadas.</p>
+    <div class="options-grid" id="quiz-options"></div>
   </div>
   <div id="quiz-area" class="hidden"></div>
 </section>
 
-<!-- ============================ SIMULADO ============================ -->
-<section id="view-simulado" class="view">
-  <div class="card" id="sim-setup">
-    <h2>📝 Simulado de prova</h2>
-    <p>Questões aleatórias de todos os temas, alternativas embaralhadas, <b>sem correção até o final</b>. Cronômetro ligado.</p>
-    <label>Número de questões:
-      <select id="sim-n"><option>10</option><option selected>20</option><option>30</option><option>50</option></select>
-    </label>
-    <label><input type="checkbox" id="sim-lista"> Só questões da Lista 1</label>
-    <br><br>
-    <button class="btn" id="sim-start">Começar simulado</button>
+<!-- ======================= SIMULADO ======================= -->
+<section class="view" id="view-simulado">
+  <h2 class="section-title">Simulado</h2>
+  <div id="sim-setup" class="card">
+    <p>Questões sorteadas de todos os temas, alternativas embaralhadas e <b>sem correção até o final</b>. Cronômetro ligado. No fim você recebe nota (0–10), desempenho por tema e a correção comentada.</p>
+    <div class="row">
+      <div class="field"><label for="sim-n">Quantidade de questões</label>
+        <select id="sim-n"><option value="10">10 questões</option><option value="20" selected>20 questões</option><option value="30">30 questões</option><option value="50">50 questões</option></select></div>
+    </div>
+    <label class="switch" style="margin-bottom:1rem"><input type="checkbox" id="sim-lista"> <span>Só questões da Lista 1</span></label>
+    <div><button class="btn btn-primary" id="sim-start">▶ Iniciar simulado</button></div>
   </div>
   <div id="sim-area" class="hidden"></div>
 </section>
 
-<!-- ============================ FLASHCARDS ============================ -->
-<section id="view-flash" class="view">
-  <div class="card center">
-    <h2>🃏 Flashcards</h2>
-    <p class="muted">Clique no cartão (ou Espaço) para virar. ← → para navegar.</p>
-    <div class="flash-wrap">
-      <div class="flashcard" id="flashcard">
-        <div class="face front" id="flash-front"></div>
-        <div class="face back" id="flash-back"></div>
-      </div>
+<!-- ======================= FLASHCARDS ======================= -->
+<section class="view" id="view-flash">
+  <h2 class="section-title">Flashcards</h2>
+  <p class="lead">Tente lembrar a resposta e toque no cartão para conferir. No computador: <code>espaço</code> vira, <code>← →</code> navegam.</p>
+  <div class="flash-wrap">
+    <div class="card flashcard" id="flashcard" role="button" tabindex="0" aria-label="Virar cartão">
+      <span class="side-label" id="flash-side">Pergunta</span>
+      <div class="front" id="flash-front"></div>
+      <div class="back" id="flash-back"></div>
+      <span class="tap">toque para virar</span>
     </div>
     <div class="flash-ctrl">
-      <button class="btn ghost" id="flash-prev">←</button>
-      <span id="flash-count"></span>
-      <button class="btn ghost" id="flash-next">→</button>
-      <button class="btn ghost" id="flash-shuffle">🔀 Embaralhar</button>
+      <button class="btn" id="flash-prev">← Anterior</button>
+      <span id="flash-count">1 / 1</span>
+      <button class="btn btn-primary" id="flash-next">Próximo →</button>
     </div>
+    <div class="flash-extra"><button class="btn btn-sm" id="flash-shuffle">🔀 Embaralhar</button></div>
   </div>
 </section>
 
-<!-- ============================ DISCURSIVAS ============================ -->
-<section id="view-discursivas" class="view">
-  <div class="card">
-    <h2>✍️ Questões discursivas</h2>
-    <p>Escreva sua resposta, depois revele a resposta-modelo e confira os <b>pontos-chave</b> que o professor provavelmente vai buscar.</p>
-  </div>
+<!-- ======================= DISCURSIVAS ======================= -->
+<section class="view" id="view-discursivas">
+  <h2 class="section-title">Discursivas</h2>
+  <p class="lead">Questões abertas da Lista 1 e extras. Escreva sua resposta (fica salva no navegador), depois revele a resposta-modelo e marque os pontos-chave que você citou.</p>
+  <div class="chips" id="disc-filter"></div>
   <div id="disc-list"></div>
 </section>
 
-<!-- ============================ LAB ============================ -->
-<section id="view-lab" class="view">
-  <div class="lab-tabs" id="lab-tabs">
+<!-- ======================= LABORATÓRIO ======================= -->
+<section class="view" id="view-lab">
+  <h2 class="section-title">Laboratório</h2>
+  <p class="lead">Simulações para ver os conceitos funcionando. Escolha uma e clique em executar.</p>
+  <div class="chips" id="lab-tabs">
     <button data-lab="race" class="active">🏁 Race condition</button>
     <button data-lab="semaforo">🚦 Semáforo / Mutex</button>
-    <button data-lab="eventos">🚪 Manual vs Auto ResetEvent</button>
-    <button data-lab="async">⏱️ Síncrono vs Assíncrono</button>
+    <button data-lab="eventos">🚪 Manual × Auto</button>
+    <button data-lab="async">⏱ Síncrono × Assíncrono</button>
     <button data-lab="deadlock">💀 Deadlock</button>
   </div>
 
-  <div class="card lab" id="lab-race">
-    <h2>🏁 Race condition: estoque com 10 itens, duas vendas de 7</h2>
-    <p>Cada thread faz: <b>1) ler estoque → 2) verificar se dá → 3) gravar novo valor</b>. Sem proteção, as etapas se intercalam.</p>
-    <label class="switch"><input type="checkbox" id="race-lock"> Usar <code>lock</code> / Monitor</label>
-    <button class="btn" id="race-run">▶ Executar</button>
+  <div class="lab card calc" id="lab-race">
+    <h3>Race condition: estoque com 10 itens, duas vendas de 7</h3>
+    <p class="desc">Cada thread faz: <b>1) ler estoque → 2) verificar se dá → 3) gravar novo valor</b>. Sem proteção, as etapas se intercalam.</p>
+    <div class="lab-ctrl">
+      <label class="switch"><input type="checkbox" id="race-lock"> <span>Usar <code>lock</code> / Monitor</span></label>
+      <button class="btn btn-primary" id="race-run">▶ Executar</button>
+    </div>
     <div class="race-grid">
       <div class="thread-col"><h4>Thread A (vende 7)</h4><div id="race-a" class="log"></div></div>
-      <div class="estoque"><div>Estoque</div><div class="big" id="race-est">10</div><div id="race-lockicon" class="lockicon">🔓</div><div id="race-vend" class="muted">Vendidos: 0</div></div>
+      <div class="estoque"><div class="small muted">Estoque</div><div class="big" id="race-est">10</div><div id="race-lockicon" class="lockicon">🔓</div><div id="race-vend" class="small muted">Vendidos: 0</div></div>
       <div class="thread-col"><h4>Thread B (vende 7)</h4><div id="race-b" class="log"></div></div>
     </div>
     <div id="race-result" class="result"></div>
   </div>
 
-  <div class="card lab hidden" id="lab-semaforo">
-    <h2>🚦 Semáforo: até N threads na região crítica</h2>
-    <p>Ajuste N. Com <b>N = 1</b> o semáforo é <b>binário</b> = funciona como um <b>Mutex</b>. Clique em uma thread dentro da região para dar <code>Release()</code>.</p>
-    <label>Vagas (N): <input type="range" id="sem-n" min="1" max="5" value="3"> <b id="sem-nv">3</b></label>
-    <button class="btn" id="sem-add">+ Nova thread chama WaitOne()</button>
-    <button class="btn ghost" id="sem-reset">Reiniciar</button>
+  <div class="lab card calc hidden" id="lab-semaforo">
+    <h3>Semáforo: até N threads na região crítica</h3>
+    <p class="desc">Ajuste N. Com <b>N = 1</b> o semáforo é <b>binário</b> e funciona como um <b>Mutex</b>. Toque em uma thread dentro da região para dar <code>Release()</code>.</p>
+    <div class="field"><label for="sem-n">Vagas (N): <b id="sem-nv">3</b></label><input type="range" id="sem-n" min="1" max="5" value="3"></div>
+    <div class="lab-ctrl">
+      <button class="btn btn-primary" id="sem-add">+ Nova thread chama WaitOne()</button>
+      <button class="btn" id="sem-reset">Reiniciar</button>
+    </div>
     <div class="sem-box">
       <div><h4>Fila de espera (bloqueadas)</h4><div id="sem-queue" class="tokens"></div></div>
-      <div class="sem-crit"><h4>Região crítica <span id="sem-count"></span></h4><div id="sem-in" class="tokens"></div></div>
+      <div class="sem-crit"><h4>Região crítica <span id="sem-count" class="muted"></span></h4><div id="sem-in" class="tokens"></div></div>
     </div>
     <pre><code id="sem-code"></code></pre>
   </div>
 
-  <div class="card lab hidden" id="lab-eventos">
-    <h2>🚪 ManualResetEvent vs 🎫 AutoResetEvent</h2>
-    <label class="radio"><input type="radio" name="evmode" value="manual" checked> ManualResetEvent</label>
-    <label class="radio"><input type="radio" name="evmode" value="auto"> AutoResetEvent</label>
-    <div class="ev-ctrl">
+  <div class="lab card calc hidden" id="lab-eventos">
+    <h3>ManualResetEvent × AutoResetEvent</h3>
+    <p class="desc">Coloque threads para esperar com <code>WaitOne()</code> e chame <code>Set()</code>. O Manual libera todas e fica aberto; o Auto libera uma e fecha sozinho.</p>
+    <div class="lab-ctrl">
+      <label class="radio"><input type="radio" name="evmode" value="manual" checked> <span>🚪 ManualResetEvent</span></label>
+      <label class="radio"><input type="radio" name="evmode" value="auto"> <span>🎫 AutoResetEvent</span></label>
+    </div>
+    <div class="lab-ctrl ev-ctrl">
       <button class="btn" id="ev-wait">+ Thread chama WaitOne()</button>
-      <button class="btn ok" id="ev-set">Set()</button>
-      <button class="btn warn" id="ev-reset">Reset()</button>
-      <button class="btn ghost" id="ev-clear">Limpar</button>
+      <button class="btn btn-primary" id="ev-set">Set()</button>
+      <button class="btn btn-warn" id="ev-reset">Reset()</button>
+      <button class="btn" id="ev-clear">Limpar</button>
     </div>
     <div class="ev-stage">
       <div><h4>Aguardando</h4><div id="ev-wait-list" class="tokens"></div></div>
@@ -598,25 +673,29 @@ await consumidor;</code></pre>
     <div id="ev-log" class="log tall"></div>
   </div>
 
-  <div class="card lab hidden" id="lab-async">
-    <h2>⏱️ Síncrono vs Assíncrono (Task.WhenAll)</h2>
-    <p>Três chamadas de API (PIX) que demoram 1s, 2s e 3s.</p>
-    <button class="btn" id="as-sync">▶ Síncrono (await um por um / bloqueante)</button>
-    <button class="btn ok" id="as-async">▶ Assíncrono (Task.WhenAll)</button>
+  <div class="lab card calc hidden" id="lab-async">
+    <h3>Síncrono × Assíncrono (Task.WhenAll)</h3>
+    <p class="desc">Três chamadas de API (PIX) que demoram 1 s, 2 s e 3 s.</p>
+    <div class="lab-ctrl">
+      <button class="btn" id="as-sync">▶ Uma por vez</button>
+      <button class="btn btn-primary" id="as-async">▶ Task.WhenAll</button>
+    </div>
     <div id="as-bars"></div>
     <div id="as-ui" class="result"></div>
-<pre><code>// Síncrono: total = 1 + 2 + 3 = 6s
+<pre><code>// Sequencial: total = 1 + 2 + 3 = 6s
 await PixAsync(1); await PixAsync(2); await PixAsync(3);
 
 // Concorrente: total ≈ 3s (a mais lenta)
 await Task.WhenAll(PixAsync(1), PixAsync(2), PixAsync(3));</code></pre>
   </div>
 
-  <div class="card lab hidden" id="lab-deadlock">
-    <h2>💀 Deadlock: espera circular</h2>
-    <p>Thread 1 pega o <b>Recurso A</b> e quer o <b>B</b>. Thread 2 pega o <b>B</b> e quer o <b>A</b>.</p>
-    <label class="switch"><input type="checkbox" id="dl-order"> Corrigir: ambas pegam os locks na <b>mesma ordem</b> (A → B)</label>
-    <button class="btn" id="dl-run">▶ Executar</button>
+  <div class="lab card calc hidden" id="lab-deadlock">
+    <h3>Deadlock: espera circular</h3>
+    <p class="desc">Thread 1 pega o <b>Recurso A</b> e quer o <b>B</b>. Thread 2 pega o <b>B</b> e quer o <b>A</b>.</p>
+    <div class="lab-ctrl">
+      <label class="switch"><input type="checkbox" id="dl-order"> <span>Corrigir: as duas pegam os locks na <b>mesma ordem</b> (A → B)</span></label>
+      <button class="btn btn-primary" id="dl-run">▶ Executar</button>
+    </div>
     <div class="dl-stage">
       <div class="dl-node" id="dl-t1">Thread 1</div>
       <div class="dl-res" id="dl-ra">🔓 Recurso A</div>
@@ -628,7 +707,13 @@ await Task.WhenAll(PixAsync(1), PixAsync(2), PixAsync(3));</code></pre>
 </section>
 </main>
 
-<footer>Material de estudo gerado a partir dos slides da disciplina. Bons estudos! 🍀</footer>
+<footer class="footer">
+  <div class="container">
+    <p class="muted">© <span id="ano">2026</span> Luan Kairo de Souza das Neves · Material de estudo baseado nos slides do Prof. Jacques Oliveira (Multivix) e na Lista 1 de exercícios.</p>
+    <p class="muted"><a href="https://luan-k10.github.io/">Portfólio</a> · <a href="https://github.com/luan-k10">GitHub</a> · <a href="https://www.linkedin.com/in/luankairo/">LinkedIn</a></p>
+  </div>
+</footer>
+
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
 </body>
