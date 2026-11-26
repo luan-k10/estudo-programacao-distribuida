@@ -96,10 +96,10 @@
     const nunca = QUESTOES.filter(q => prog[q.id] === undefined);
     const lista1 = QUESTOES.filter(q => q.f.startsWith("Lista"));
     const opts = [
-      { nome: "📋 Lista 1 do professor", sub: `${lista1.length} questões objetivas na ordem original`, fn: () => startQuiz("Lista 1", lista1, false) },
-      { nome: "🎲 Todas misturadas", sub: `${QUESTOES.length} questões`, fn: () => startQuiz("Todas", shuffle(QUESTOES)) },
-      { nome: "🆕 Ainda não respondidas", sub: `${nunca.length} questões`, fn: () => nunca.length ? startQuiz("Não respondidas", shuffle(nunca)) : alert("Você já respondeu todas!") },
-      { nome: "🔁 Revisar erradas", sub: `${erradas.length} questões`, fn: () => erradas.length ? startQuiz("Revisão de erradas", shuffle(erradas)) : alert("Nenhuma questão errada para revisar 🎉") },
+      { nome: "Lista 1 do professor", sub: `${lista1.length} questões objetivas na ordem original`, fn: () => startQuiz("Lista 1", lista1, false) },
+      { nome: "Todas misturadas", sub: `${QUESTOES.length} questões`, fn: () => startQuiz("Todas", shuffle(QUESTOES)) },
+      { nome: "Ainda não respondidas", sub: `${nunca.length} questões`, fn: () => nunca.length ? startQuiz("Não respondidas", shuffle(nunca)) : alert("Você já respondeu todas!") },
+      { nome: "Revisar erradas", sub: `${erradas.length} questões`, fn: () => erradas.length ? startQuiz("Revisão de erradas", shuffle(erradas)) : alert("Nenhuma questão errada para revisar") },
       ...Object.entries(TEMAS).map(([k, nome]) => ({ nome, sub: `${QUESTOES.filter(q => q.t === k).length} questões`, fn: () => startQuiz(nome, shuffle(QUESTOES.filter(q => q.t === k))) })),
     ];
     const box = $("#quiz-options");
@@ -124,7 +124,7 @@
     function render() {
       const it = itens[i], q = it.q, r = resp[i];
       area.innerHTML = `<div class="card">
-        <div class="qhead"><span><b>${esc(titulo)}</b> · ${esc(q.f)}${titulo === TEMAS[q.t] ? "" : " · " + esc(TEMAS[q.t])}</span><span id="q-score">Questão ${i + 1}/${itens.length} · ✅ ${acertos}</span></div>
+        <div class="qhead"><span><b>${esc(titulo)}</b> · ${esc(q.f)}${titulo === TEMAS[q.t] ? "" : " · " + esc(TEMAS[q.t])}</span><span id="q-score">Questão ${i + 1}/${itens.length} · ✓ ${acertos}</span></div>
         <div class="progressline"><div style="width:${(i + 1) * 100 / itens.length}%"></div></div>
         <div class="qtext">${esc(q.q)}</div>
         <div id="opts">${it.ord.map((oi, k) => `<button type="button" class="opt" data-k="${k}"><span class="l">${L[k]})</span><span>${esc(q.o[oi])}</span></button>`).join("")}</div>
@@ -141,7 +141,7 @@
         if (ok) acertos++;
         registrar(q, ok);
         mostrar(k);
-        $("#q-score").textContent = `Questão ${i + 1}/${itens.length} · ✅ ${acertos}`;
+        $("#q-score").textContent = `Questão ${i + 1}/${itens.length} · ✓ ${acertos}`;
       }));
       $("#q-prev").onclick = () => { i--; render(); };
       $("#q-next").onclick = () => { if (i < itens.length - 1) { i++; render(); } else fim(); };
@@ -155,7 +155,7 @@
         else if (j === k) b.classList.add("wrong");
       });
       const ok = k === it.correta;
-      $("#explic").innerHTML = `<div class="explic ${ok ? "" : "bad"}"><b>${ok ? "✅ Correto!" : `❌ Resposta certa: ${L[it.correta]}`}</b><br>${esc(it.q.e)}</div>`;
+      $("#explic").innerHTML = `<div class="explic ${ok ? "" : "bad"}"><b>${ok ? "✓ Correto!" : `✗ Resposta certa: ${L[it.correta]}`}</b><br>${esc(it.q.e)}</div>`;
     }
     function fim() {
       const resp_ = resp.filter(r => r !== null).length;
@@ -185,13 +185,13 @@
     area.classList.remove("hidden");
     const tempo = () => { const s = Math.floor((Date.now() - t0) / 1000); return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`; };
     clearInterval(simTimer);
-    simTimer = setInterval(() => { const el = $("#sim-time"); if (el) el.textContent = "⏱ " + tempo(); }, 1000);
+    simTimer = setInterval(() => { const el = $("#sim-time"); if (el) el.textContent = tempo(); }, 1000);
 
     function render() {
       const it = itens[i];
       const respondidas = resp.filter(r => r !== null).length;
       area.innerHTML = `<div class="card">
-        <div class="qhead"><span>Simulado · Questão ${i + 1}/${itens.length} · respondidas ${respondidas}</span><span class="timer" id="sim-time">⏱ ${tempo()}</span></div>
+        <div class="qhead"><span>Simulado · Questão ${i + 1}/${itens.length} · respondidas ${respondidas}</span><span class="timer" id="sim-time">${tempo()}</span></div>
         <div class="progressline"><div style="width:${respondidas * 100 / itens.length}%"></div></div>
         <div class="qtext">${esc(it.q.q)}</div>
         <div id="s-opts">${it.ord.map((oi, k) => `<button type="button" class="opt ${resp[i] === k ? "sel" : ""}" data-k="${k}"><span class="l">${L[k]})</span><span>${esc(it.q.o[oi])}</span></button>`).join("")}</div>
@@ -229,7 +229,7 @@
         <button type="button" class="btn btn-primary" id="s-new">Novo simulado</button></div>
         <div class="card"><h3 style="margin-top:0">Correção</h3>${itens.map((it, k) => {
           const r = resp[k], ok = r === it.correta;
-          return `<div class="review-item"><b class="${ok ? "ok" : "bad"}">${ok ? "✅" : "❌"} ${k + 1}.</b> ${esc(it.q.q)}<br>
+          return `<div class="review-item"><b class="${ok ? "ok" : "bad"}">${ok ? "✓" : "✗"} ${k + 1}.</b> ${esc(it.q.q)}<br>
             ${r === null ? `<span class="bad">Não respondida.</span> ` : ok ? "" : `<span class="bad">Sua: ${esc(it.q.o[it.ord[r]])}</span><br>`}
             <span class="ok">Certa: ${esc(it.q.o[it.q.a])}</span><br><span class="muted">${esc(it.q.e)}</span></div>`;
         }).join("")}</div>`;
@@ -314,7 +314,7 @@
     A.innerHTML = B.innerHTML = ""; res.className = "result";
     let estoque = 10, vendidos = 0;
     const upd = () => { est.textContent = estoque; vend.textContent = "Vendidos: " + vendidos; };
-    upd(); li.textContent = "🔓";
+    upd(); li.textContent = "livre";
     const D = 700;
     if (!lock) {
       let a = estoque; logTo(A, `1) leu estoque = <b>${a}</b>`); await sleep(D);
@@ -324,19 +324,19 @@
       estoque = a - 7; vendidos += 7; upd(); logTo(A, `3) gravou estoque = ${estoque}`); await sleep(D);
       estoque = b - 7; vendidos += 7; upd(); logTo(B, `3) gravou estoque = ${estoque}`); await sleep(D);
       res.className = "result show bad";
-      res.innerHTML = `❌ RACE CONDITION! Foram vendidos <b>${vendidos}</b> itens, mas só existiam 10. As duas threads leram 10 antes de alguém gravar. Estoque final ${estoque} está errado.`;
+      res.innerHTML = `✗ RACE CONDITION! Foram vendidos <b>${vendidos}</b> itens, mas só existiam 10. As duas threads leram 10 antes de alguém gravar. Estoque final ${estoque} está errado.`;
     } else {
-      li.textContent = "🔒"; logTo(A, "🔒 Monitor.Enter(obj) — entrou"); logTo(B, "⏳ tentou entrar... BLOQUEADA"); await sleep(D);
+      li.textContent = "em uso"; logTo(A, "Monitor.Enter(obj) — entrou"); logTo(B, "tentou entrar... BLOQUEADA"); await sleep(D);
       let a = estoque; logTo(A, `1) leu estoque = <b>${a}</b>`); await sleep(D);
       logTo(A, `2) ${a} ≥ 7 ✔ pode vender`); await sleep(D);
       estoque = a - 7; vendidos += 7; upd(); logTo(A, `3) gravou estoque = ${estoque}`); await sleep(D);
-      logTo(A, "🔓 Monitor.Exit(obj)"); li.textContent = "🔓"; await sleep(D / 2);
-      li.textContent = "🔒"; logTo(B, "🔒 entrou na região crítica"); await sleep(D);
+      logTo(A, "Monitor.Exit(obj)"); li.textContent = "livre"; await sleep(D / 2);
+      li.textContent = "em uso"; logTo(B, "entrou na região crítica"); await sleep(D);
       let b = estoque; logTo(B, `1) leu estoque = <b>${b}</b>`); await sleep(D);
       logTo(B, `2) ${b} &lt; 7 ✘ <b>venda recusada</b>`); await sleep(D);
-      logTo(B, "🔓 Monitor.Exit(obj)"); li.textContent = "🔓";
+      logTo(B, "Monitor.Exit(obj)"); li.textContent = "livre";
       res.className = "result show ok";
-      res.innerHTML = `✅ Correto! Com <code>lock</code>/Monitor só uma thread por vez executa a região crítica. Vendidos ${vendidos}, estoque ${estoque}. B viu o valor atualizado e recusou.`;
+      res.innerHTML = `✓ Correto! Com <code>lock</code>/Monitor só uma thread por vez executa a região crítica. Vendidos ${vendidos}, estoque ${estoque}. B viu o valor atualizado e recusou.`;
     }
     raceBusy = false;
   });
@@ -375,7 +375,7 @@
     $("#ev-pass-list").innerHTML = evPass.map(t => `<div class="tok in">T${t}</div>`).join("");
     const g = $("#ev-gate");
     g.classList.toggle("open", evSig);
-    g.innerHTML = `${evSig ? "🟢" : "🔴"}<div id="ev-state">${evSig ? "SINALIZADO" : "NÃO SINALIZADO"}</div>`;
+    g.innerHTML = `<span class="ev-dot${evSig ? " on" : ""}"></span><div id="ev-state">${evSig ? "SINALIZADO" : "NÃO SINALIZADO"}</div>`;
   }
   $("#ev-wait").onclick = () => {
     const t = ++evId;
@@ -416,7 +416,7 @@
     const bars = $("#as-bars"), ui = $("#as-ui");
     bars.innerHTML = durs.map((d, i) => `<div class="asrow"><span>PIX ${i + 1} (${d}s)</span><div class="astrack"><div class="asbar" id="asb${i}"></div></div></div>`).join("");
     ui.className = "result show " + (paralelo ? "ok" : "bad");
-    ui.textContent = paralelo ? "⏳ Disparando as 3 tarefas juntas... a interface continua livre." : "⏳ Executando uma por vez... (em código bloqueante a UI congelaria)";
+    ui.textContent = paralelo ? "Disparando as 3 tarefas juntas... a interface continua livre." : "Executando uma por vez... (em código bloqueante a UI congelaria)";
     const t0 = performance.now();
     const anima = (i, start) => new Promise(r => {
       const b = $("#asb" + i);
@@ -429,8 +429,8 @@
     else { let s = 0; for (let i = 0; i < durs.length; i++) { await anima(i, s); s += durs[i]; } }
     const t = ((performance.now() - t0) / 1000).toFixed(1);
     ui.innerHTML = paralelo
-      ? `✅ <b>Task.WhenAll</b>: total ≈ <b>${t}s</b> (tempo da tarefa mais lenta). As chamadas aconteceram ao mesmo tempo.`
-      : `🐢 <b>Sequencial</b>: total ≈ <b>${t}s</b> = 1 + 2 + 3. Cada chamada esperou a anterior terminar.`;
+      ? `✓ <b>Task.WhenAll</b>: total ≈ <b>${t}s</b> (tempo da tarefa mais lenta). As chamadas aconteceram ao mesmo tempo.`
+      : `<b>Sequencial</b>: total ≈ <b>${t}s</b> = 1 + 2 + 3. Cada chamada esperou a anterior terminar.`;
     asBusy = false;
   }
   $("#as-sync").onclick = () => asRun(false);
@@ -442,28 +442,28 @@
     if (dlBusy) return; dlBusy = true;
     const ordem = $("#dl-order").checked;
     const t1 = $("#dl-t1"), t2 = $("#dl-t2"), ra = $("#dl-ra"), rb = $("#dl-rb"), log = $("#dl-log");
-    const reset = () => { [t1, t2].forEach(e => e.className = "dl-node"); ra.className = rb.className = "dl-res"; ra.textContent = "🔓 Recurso A"; rb.textContent = "🔓 Recurso B"; t1.textContent = "Thread 1"; t2.textContent = "Thread 2"; };
-    const own = (r, nome, t) => { r.className = "dl-res " + t; r.textContent = `🔒 ${nome} (${t.toUpperCase()})`; };
-    const free = (r, nome) => { r.className = "dl-res"; r.textContent = `🔓 ${nome}`; };
+    const reset = () => { [t1, t2].forEach(e => e.className = "dl-node"); ra.className = rb.className = "dl-res"; ra.textContent = "Recurso A"; rb.textContent = "Recurso B"; t1.textContent = "Thread 1"; t2.textContent = "Thread 2"; };
+    const own = (r, nome, t) => { r.className = "dl-res " + t; r.textContent = `${nome} (${t.toUpperCase()})`; };
+    const free = (r, nome) => { r.className = "dl-res"; r.textContent = `${nome}`; };
     reset(); log.innerHTML = "";
     const D = 800;
     if (!ordem) {
       own(ra, "Recurso A", "t1"); logTo(log, "T1: lock(A) ✔"); await sleep(D);
       own(rb, "Recurso B", "t2"); logTo(log, "T2: lock(B) ✔"); await sleep(D);
-      t1.className = "dl-node blocked"; t1.textContent = "Thread 1 ⏳ quer B"; logTo(log, "T1: lock(B)... B está com T2 → <b>esperando</b>"); await sleep(D);
-      t2.className = "dl-node blocked"; t2.textContent = "Thread 2 ⏳ quer A"; logTo(log, "T2: lock(A)... A está com T1 → <b>esperando</b>"); await sleep(D);
-      logTo(log, "💀 <b>DEADLOCK</b>: espera circular — nenhuma thread avança, para sempre.");
+      t1.className = "dl-node blocked"; t1.textContent = "Thread 1 quer B"; logTo(log, "T1: lock(B)... B está com T2 → <b>esperando</b>"); await sleep(D);
+      t2.className = "dl-node blocked"; t2.textContent = "Thread 2 quer A"; logTo(log, "T2: lock(A)... A está com T1 → <b>esperando</b>"); await sleep(D);
+      logTo(log, "<b>DEADLOCK</b>: espera circular — nenhuma thread avança, para sempre.");
       logTo(log, "Como evitar: mesma ordem de aquisição, <code>Monitor.TryEnter</code> com timeout, ou menos locks aninhados.");
     } else {
       own(ra, "Recurso A", "t1"); logTo(log, "T1: lock(A) ✔"); await sleep(D);
-      t2.className = "dl-node blocked"; t2.textContent = "Thread 2 ⏳ quer A"; logTo(log, "T2: lock(A)... ocupado → espera (sem pegar B antes!)"); await sleep(D);
+      t2.className = "dl-node blocked"; t2.textContent = "Thread 2 quer A"; logTo(log, "T2: lock(A)... ocupado → espera (sem pegar B antes!)"); await sleep(D);
       own(rb, "Recurso B", "t1"); logTo(log, "T1: lock(B) ✔ → trabalha"); await sleep(D);
       free(rb, "Recurso B"); free(ra, "Recurso A"); t1.className = "dl-node done"; t1.textContent = "Thread 1 ✔"; logTo(log, "T1: liberou B e A"); await sleep(D);
       t2.className = "dl-node"; t2.textContent = "Thread 2";
       own(ra, "Recurso A", "t2"); logTo(log, "T2: lock(A) ✔"); await sleep(D);
       own(rb, "Recurso B", "t2"); logTo(log, "T2: lock(B) ✔ → trabalha"); await sleep(D);
       free(rb, "Recurso B"); free(ra, "Recurso A"); t2.className = "dl-node done"; t2.textContent = "Thread 2 ✔"; logTo(log, "T2: liberou B e A");
-      logTo(log, "✅ Sem deadlock: a ordem fixa (A → B) impede a espera circular.");
+      logTo(log, "✓ Sem deadlock: a ordem fixa (A → B) impede a espera circular.");
     }
     dlBusy = false;
   });
