@@ -611,3 +611,7 @@ h1, h2, h3, h4, b, strong, th { font-weight: 600; }
 .lockicon { font: 500 .78rem/1.6 var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--gold); min-height: 1.6em; }
 .ev-dot { display: block; width: .9rem; height: .9rem; margin: 0 auto .35rem; border-radius: 50%; background: var(--bad); }
 .ev-dot.on { background: var(--ok); }
+
+/* Logo sem fundo */
+.mark rect { fill: transparent; }
+.mark path { fill: var(--accent); transform-box: fill-box; transform-origin: center; transform: scale(1.3); }
